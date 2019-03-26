@@ -13,7 +13,7 @@ public class Drive {
         rightWheel = new EV3LargeRegulatedMotor(MotorPort.C);
     }
 
-    public static void drive(int distance){
+    public void drive(int distance, float turn){
         if(distance > 0){
             leftWheel.forward();
             rightWheel.forward();

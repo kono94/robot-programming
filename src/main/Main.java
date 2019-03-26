@@ -1,20 +1,8 @@
 package main;
 
-import components.Drive;
-import lejos.hardware.Button;
-import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.AnalogSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.hardware.sensor.SensorModes;
-import lejos.remote.ev3.RMISampleProvider;
-import lejos.remote.ev3.RemoteEV3;
-import lejos.robotics.SampleProvider;
-import lejos.utility.Delay;
-import lejos.hardware.sensor.NXTSoundSensor;
+
+import programs.TestProgram;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
@@ -22,44 +10,12 @@ import java.rmi.RemoteException;
 
 public class Main {
     public static void main(String[] args) {
-
-        RemoteEV3 ev3 = null;
+        TestProgram t = new TestProgram();
         try {
-            ev3 = new RemoteEV3("192.168.0.222");
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
+            t.startRemote();
+        } catch (RemoteException | NotBoundException | MalformedURLException e) {
             e.printStackTrace();
         }
-        ev3.setDefault();
-        Sound.beep();
-        ev3.getGraphicsLCD().clear();
-        LCD.clearDisplay();
-        LCD.drawString("Eike ist gay", 5,5);
-
-
-        RMISampleProvider sensor = ev3.createSampleProvider("S4", "lejos.hardware.sensor.EV3UltrasonicSensor", "Distance");
-
-        float[] sample = new float[1];
-        try {
-            sample =  sensor.fetchSample();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(sample[0]);
-        Delay.msDelay(5000);
-
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() ->{
-            try{
-                sensor.close();
-            }catch (Exception e){
-                System.err.println(e);
-            }
-        }));
 
 /*
         new Thread(() -> {
