@@ -1,30 +1,38 @@
 package lib;
 
-import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RMISampleProvider;
 import lejos.remote.ev3.RemoteEV3;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceManager {
-
     private RemoteEV3 ev3;
-    private List<RMISampleProvider> sampleProviders;
     private List<RMIRegulatedMotor> regulatedMotors;
+    private List<Closeable> sensors;
 
     ResourceManager(RemoteEV3 ev3){
-        sampleProviders = new ArrayList<>();
         regulatedMotors = new ArrayList<>();
+        sensors = new ArrayList<>();
         this.ev3 = ev3;
     }
 
-    public RMISampleProvider createDistanceSensor(Port port){
-        RMISampleProvider sensor = ev3.createSampleProvider(port.getName(), "lejos.hardware.sensor.EV3UltrasonicSensor", "Distance");
-        sampleProviders.add(sensor);
+    public EV3UltrasonicSensor createDistanceSensor(Port port){
+        EV3UltrasonicSensor sensor = new EV3UltrasonicSensor(port);
+        sensor.setCurrentMode("Distance");
+        sensors.add(sensor);
         return sensor;
+    }
+
+    public EV3ColorSensor createColorSensor(Port port){
+        EV3ColorSensor colorSensor = new EV3ColorSensor(port);
+        sensors.add(colorSensor);
+        return colorSensor;
     }
 
     public RMIRegulatedMotor createRegularMotor(Port port){
@@ -42,11 +50,11 @@ public class ResourceManager {
         this.ev3 = ev3;
     }
 
-    public List<RMISampleProvider> getSampleProviders() {
-        return sampleProviders;
-    }
-
     public List<RMIRegulatedMotor> getRegulatedMotors() {
         return regulatedMotors;
+    }
+
+    public List<Closeable> getSensors() {
+        return sensors;
     }
 }
