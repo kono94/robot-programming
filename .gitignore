@@ -142,3 +142,5 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+# Custom
+SCR.iml
