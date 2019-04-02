@@ -35,4 +35,17 @@ public class Controller {
 
         return rm;
     }
+
+    public void setBackupShutdown(int seconds){
+        new Thread(() -> {
+            try {
+                Thread.sleep(seconds * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.exit(0);
+        }).start();
+    }
+
 }

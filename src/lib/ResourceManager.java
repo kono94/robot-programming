@@ -2,6 +2,7 @@ package lib;
 
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RMISampleProvider;
@@ -29,6 +30,13 @@ public class ResourceManager {
         return sensor;
     }
 
+    public EV3TouchSensor createTouchSensor(Port port){
+        EV3TouchSensor sensor = new EV3TouchSensor(port);
+        sensors.add(sensor);
+        return sensor;
+    }
+
+
     public EV3ColorSensor createColorSensor(Port port){
         EV3ColorSensor colorSensor = new EV3ColorSensor(port);
         sensors.add(colorSensor);
@@ -41,6 +49,7 @@ public class ResourceManager {
         regulatedMotors.add(motor);
         return motor;
     }
+
 
     public RemoteEV3 getEv3() {
         return ev3;

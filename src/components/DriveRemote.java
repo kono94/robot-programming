@@ -15,25 +15,47 @@ public class DriveRemote implements Drivable {
         this.right = right;
     }
 
-    public void drive(int speed, float turn) {
+    /**
+     *
+     * @param speed from -100 to 100 in percent of max speed, negative equals backwards
+     * @param turn from -100 to 100 relation between left (-) and right (+) wheel; 100 only the right wheel is
+     *             rotation in speed %; 0 equals straight forward
+     */
+    public void drive(int speed, int turn) {
         try {
-            System.out.println(right.getMaxSpeed());
-
-            left.setSpeed(speed);
-            right.setSpeed(speed);
-            right.forward();
-            left.backward();
+            int maxSpeed = (int) (right.getMaxSpeed()*0.5);
+            int customSpeed = (maxSpeed * speed)/100;
             /*
-            200 => 4000
-            1 => 800000
+                 300  turn 0 = left 300 right 300
+                 300  turn 50 = left 150 right 300
+                 300 turn 100 = left 0 right 300
 
+                 300 turn -50 = left 300 right 150
+                 300 turn 100 = left 300 right 0
              */
-            Delay.msDelay(3875);
-            System.out.println(right.getTachoCount());
 
-            right.stop(true);
+            if(turn > 0){
+                right.setSpeed(customSpeed);
+                left.setSpeed(customSpeed * (turn/100));
+            }else{
+                left.setSpeed(customSpeed);
+                right.setSpeed(customSpeed * (-turn/100));
+            }
 
-            left.stop(true);
+            System.out.println("Left-Speed: " + left.getSpeed());
+            System.out.println("Right-Speed: " + right.getSpeed());
+
+            if(speed > 0){
+                right.forward();
+                left.forward();
+            }else if(speed < 0 ){
+                right.backward();
+                left.backward();
+            }else{
+                right.stop(true);
+                left.stop(true);
+            }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
