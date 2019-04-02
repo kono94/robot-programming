@@ -56,7 +56,7 @@ public class TestProgram {
                     TestProgram.RUN = false;
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     Log.error(e);
                 }
@@ -67,11 +67,12 @@ public class TestProgram {
         while (RUN) {
             float redValue = b[0];
             int turn = (int) (-596 * redValue * redValue + 631 * redValue - 93);
+
             a.fetchSample(b, 0);
             System.out.printf("\r TURN: %d\t RED-SENSOR: %f", turn, redValue);
             //System.out.println(b[0]);
             // System.out.println("Turn: " + (int) (-720.534709 * b[0] * b[0] + 906.9618594 * b[0] - 166.9780533));
-            drive.drive(10, turn);
+            drive.drive(20, turn);
         }
     }
 }

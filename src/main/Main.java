@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         TestProgram t = new TestProgram();
         try {
-            t.start(true);
+            t.start(false);
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
             e.printStackTrace();
         }
