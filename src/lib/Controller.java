@@ -3,6 +3,7 @@ package lib;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RMISampleProvider;
 import lejos.remote.ev3.RemoteEV3;
+import programs.TestProgram;
 
 import java.io.Closeable;
 import java.net.MalformedURLException;
@@ -17,7 +18,6 @@ public class Controller {
     public ResourceManager setupRemoteResourceManager() throws RemoteException, NotBoundException, MalformedURLException {
         RemoteEV3 ev3 = new RemoteEV3("192.168.0.222");
         ev3.setDefault();
-
         ResourceManager rm = new ResourceManager(ev3);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -28,6 +28,7 @@ public class Controller {
                 for (Closeable sensor : rm.getSensors()) {
                     sensor.close();
                 }
+                System.exit(0);
             } catch (Exception e) {
                 System.err.println(e);
             }

@@ -23,7 +23,7 @@ public class DriveRemote implements Drivable {
      */
     public void drive(int speed, int turn) {
         try {
-            int maxSpeed = (int) (right.getMaxSpeed()*0.5);
+            int maxSpeed = (int) right.getMaxSpeed();
             int customSpeed = (maxSpeed * speed)/100;
             /*
                  300  turn 0 = left 300 right 300
@@ -31,20 +31,52 @@ public class DriveRemote implements Drivable {
                  300 turn 100 = left 0 right 300
 
                  300 turn -50 = left 300 right 150
-                 300 turn 100 = left 300 right 0
+                 300 turn -100 = left 300 right 0
+
+                 // right side always
+                 0.01 => -50 turn
+                 0.14 => 100 turn
+                 0.06 => 0 turn
+
+                 0.01     0.06        0.14
+                 -50       0          100
+
+
+                            I------------------I
+                0.16(blue)       0.06(black)
+
+               0.5(grey-table)              0.2-0.3 (half-half)
+
+                 - => drive left
+                 + => drive right
              */
 
-            if(turn > 0){
+            if(turn > 0 && turn <= 50){
                 right.setSpeed(customSpeed);
-                left.setSpeed(customSpeed * (turn/100));
+                right.forward();
+                left.setSpeed((int) (customSpeed * ((100 - turn)/ (double)100)));
+                left.forward();
+            }else if(turn > 50){
+                right.setSpeed(customSpeed);
+                right.forward();
+                left.setSpeed((int) (customSpeed * ((turn)/ (double)100)));
+                left.backward();
+            }else if(turn >= -50){
+                left.setSpeed(customSpeed);
+                left.forward();
+                right.setSpeed((int) (customSpeed * (100 -(-turn))/(double)100));
+                right.forward();
             }else{
                 left.setSpeed(customSpeed);
-                right.setSpeed(customSpeed * (-turn/100));
+                left.forward();
+                right.setSpeed((int) (customSpeed * (-turn)/(double)100));
+                right.backward();
             }
 
-            System.out.println("Left-Speed: " + left.getSpeed());
-            System.out.println("Right-Speed: " + right.getSpeed());
+            //System.out.println("Left-Speed: " + left.getSpeed());
+           // System.out.println("Right-Speed: " + right.getSpeed());
 
+            /*
             if(speed > 0){
                 right.forward();
                 left.forward();
@@ -55,6 +87,7 @@ public class DriveRemote implements Drivable {
                 right.stop(true);
                 left.stop(true);
             }
+            */
 
         } catch (RemoteException e) {
             e.printStackTrace();
