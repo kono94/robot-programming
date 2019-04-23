@@ -11,6 +11,7 @@
       <element id="extracted-dir" path="$USER_HOME$/Binaries/leJOS_EV3_0.9.1-beta/lib/ev3/ev3classes.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/Binaries/leJOS_EV3_0.9.1-beta/lib/ev3/3rdparty/opencv-2411.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/Binaries/leJOS_EV3_0.9.1-beta/lib/pc/3rdparty/jsch-0.1.50.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/commons-math3-3.6.1/commons-math3-3.6.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
