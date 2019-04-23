@@ -1,0 +1,1 @@
+scp out/artifacts/SCR_jar/SCR.jar ev3:/home/lejos/programs

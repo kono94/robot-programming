@@ -26,7 +26,7 @@ public class TestProgram {
     public TestProgram() {
     }
 
-    public void start(boolean runRemote) throws RemoteException, NotBoundException, MalformedURLException {
+    public void start() throws RemoteException, NotBoundException, MalformedURLException {
         Controller controller = new Controller();
         EV3ColorSensor colorSensor;
         EV3TouchSensor touchSensor;
@@ -35,8 +35,14 @@ public class TestProgram {
 //      double min = 0.03;
 //      double max = 0.41;
 
-
-        if (runRemote) {
+        /* Detects os architecture from ev3 */
+        if (System.getProperty("os.arch").toLowerCase().matches("arm")) {
+            drive = new Drive(new EV3LargeRegulatedMotor(MotorPort.B), new EV3LargeRegulatedMotor(MotorPort.C));
+            colorSensor = new EV3ColorSensor(SensorPort.S2);
+            colorSensor.setCurrentMode(colorSensor.getRedMode().getName());
+            a = colorSensor.getRedMode();
+            touchSensor = new EV3TouchSensor(SensorPort.S1);
+        } else {
             ResourceManager rm;
             rm = controller.setupRemoteResourceManager();
             drive = new DriveRemote(rm.createRegularMotor(MotorPort.B), rm.createRegularMotor(MotorPort.C));
@@ -44,12 +50,6 @@ public class TestProgram {
             colorSensor.setCurrentMode(colorSensor.getRedMode().getName());
             a = colorSensor.getRedMode();
             touchSensor = rm.createTouchSensor(SensorPort.S1);
-        } else {
-            drive = new Drive(new EV3LargeRegulatedMotor(MotorPort.B), new EV3LargeRegulatedMotor(MotorPort.C));
-            colorSensor = new EV3ColorSensor(SensorPort.S2);
-            colorSensor.setCurrentMode(colorSensor.getRedMode().getName());
-            a = colorSensor.getRedMode();
-            touchSensor = new EV3TouchSensor(SensorPort.S1);
         }
 
         System.out.println("Click for first color");

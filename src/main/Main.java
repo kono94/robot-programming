@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         TestProgram t = new TestProgram();
         try {
-            t.start(false);
+            t.start();
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
             e.printStackTrace();
         }
