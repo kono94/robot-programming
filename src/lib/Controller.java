@@ -1,42 +1,75 @@
 package lib;
 
-import lejos.remote.ev3.RMIRegulatedMotor;
-import lejos.remote.ev3.RMISampleProvider;
+import components.Drivable;
+import components.MyColorSensor;
+import config.Constants;
+import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.remote.ev3.RemoteEV3;
-import programs.TestProgram;
+import org.jfree.util.Log;
+import utils.FollowLineController;
 
-import java.io.Closeable;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 public class Controller {
 
-    public Controller() {
-    }
+    public static volatile boolean RUN = false;
+    private ResourceManager resourceManager;
+    private FollowLineController followLineController;
+    private Drivable drivable;
+    private MyColorSensor primaryColorSensor;
+    private EV3TouchSensor primaryTouchSensor;
 
-    public ResourceManager setupRemoteResourceManager() throws RemoteException, NotBoundException, MalformedURLException {
-        RemoteEV3 ev3 = new RemoteEV3("192.168.0.222");
-        ev3.setDefault();
-        ResourceManager rm = new ResourceManager(ev3);
+    private boolean isRemote;
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+    public Controller(boolean isRemote) {
+        this.isRemote = isRemote;
+        if(this.isRemote){
+            RemoteEV3 ev3 = null;
             try {
-                for (RMIRegulatedMotor regulatedMotor : rm.getRegulatedMotors()) {
-                    regulatedMotor.close();
-                }
-                for (Closeable sensor : rm.getSensors()) {
-                    sensor.close();
-                }
-                System.exit(0);
-            } catch (Exception e) {
-                System.err.println(e);
+                ev3 = new RemoteEV3(Constants.REMOTE_HOST);
+                ev3.setDefault();
+            } catch (RemoteException | MalformedURLException | NotBoundException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Could not setup RemoteEV3");
             }
-        }));
-
-        return rm;
+            resourceManager = new ResourceManagerRemote(ev3);
+        }else{
+            resourceManager = new ResourceManagerLocal();
+        }
     }
 
+    public void init(){
+        primaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_PORT));
+        drivable = resourceManager.createDrivable(Constants.MOTOR_PORT_LEFT, Constants.MOTOR_PORT_RIGHT);
+        primaryTouchSensor = resourceManager.createTouchSensor(Constants.TOUCH_SENSOR_PORT);
+        Controller.RUN = true;
+    }
+
+    public void followLine(){
+        followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor);
+        followLineController.init();
+        registerShutdownOnTouchSensorClick();
+        followLineController.start();
+    }
+
+    public void registerShutdownOnTouchSensorClick(){
+        new Thread(() -> {
+            float[] b = new float[1];
+            while (RUN) {
+                primaryTouchSensor.fetchSample(b, 0);
+                if (b[0] == 1) {
+                    Controller.RUN = false;
+                }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    Log.error(e);
+                }
+            }
+        }).start();
+    }
     public void setBackupShutdown(int seconds){
         new Thread(() -> {
             try {
