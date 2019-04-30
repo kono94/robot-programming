@@ -1,9 +1,9 @@
 package utils;
 
 public class PIDController {
-    private final float Kp = 100f;
-    private final float Ki = 0.001f;
-    private final float Kd = 200f;
+    private final float Kp = 50f;
+    private final float Ki = 0.05f;
+    private final float Kd = 10000f;
 
     private float setPoint;
     private float previousError = 0f;
@@ -14,6 +14,8 @@ public class PIDController {
     private int dt = 1;
     private int highLimitAdjustment = 100;
     private int lowLimitAdjustment = -100;
+    private int maxIntegral = 100;
+    private int minIntegral = -100;
 
     public PIDController(float setPoint) {
         this.setPoint = setPoint;
@@ -31,7 +33,10 @@ public class PIDController {
         integral += Ki * error * dt;
         // Differential
         derivative = (error - previousError) / dt;
-        System.out.println("error: " + error + " integral: " + integral + " derivative: " + derivative);
+        System.out.println("error: " + Kp * error + " integral: " + integral + " derivative: " + Kd * derivative);
+
+        if (integral > maxIntegral) integral = maxIntegral;
+        if (integral < minIntegral) integral = minIntegral;
 
         int adjustment = (int) (Kp * error + integral + Kd * derivative);
         if (adjustment > highLimitAdjustment) adjustment = highLimitAdjustment;
