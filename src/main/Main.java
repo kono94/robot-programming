@@ -1,19 +1,14 @@
 package main;
 
 
-import programs.TestProgram;
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
+import lib.Controller;
 
 
 public class Main {
     public static void main(String[] args) {
-        TestProgram t = new TestProgram();
-        try {
-            t.start();
-        } catch (RemoteException | NotBoundException | MalformedURLException e) {
-            e.printStackTrace();
-        }
+        boolean isEV3 =  System.getProperty("os.arch").toLowerCase().matches("arm");
+        Controller c = new Controller(!isEV3);
+        c.init();
+        c.followLine();
     }
 }
