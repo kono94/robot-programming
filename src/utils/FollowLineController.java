@@ -17,6 +17,7 @@ public class FollowLineController {
         this.drivable = drivable;
         this.colorSensor = colorSensor;
         this.touchSensor = touchSensor;
+        int k = 3;
     }
 
     public void init(){
