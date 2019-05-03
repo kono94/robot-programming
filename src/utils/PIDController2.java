@@ -1,10 +1,10 @@
 package utils;
 
-public class PIDController2 {
+public class PIDController2 implements Adjuster{
     IntegralManager integralManager;
     ProportionalManager proportionalManager;
     DifferentialManager differentialManager;
-    private Normalizer normalizer;
+
     private float Kp = 1.0f;
     private float Ki = 1.0f;
     private float Kd = 1.0f;
@@ -13,16 +13,15 @@ public class PIDController2 {
         this.integralManager = new IntegralManager();
         this.proportionalManager = new ProportionalManager();
         this.differentialManager = new DifferentialManager();
-        this.normalizer = new Normalizer(0, 1, -1, 1);
     }
 
-    private float pid(float sensorInput){
-        float error = normalizer.normalizeValue(sensorInput);
+    @Override
+    public int calculateAdjustment(float error){
         float pValue = proportionalManager.feedAndGet(error);
         float iValue = integralManager.feedAndGet(error);
         float dValue = differentialManager.feedAndGet(error);
 
-        return Kp * pValue + Ki * iValue + Kd * dValue;
+        return (int) (Kp * pValue + Ki * iValue + Kd * dValue);
     }
 
     /*

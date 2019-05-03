@@ -27,4 +27,11 @@ public class Normalizer {
     public float normalizeValue(float value){
         return a * value + b;
     }
+
+    public float getMin(){
+        return lowerBorder;
+    }
+    public float getMax(){
+        return upperBorder;
+    }
 }

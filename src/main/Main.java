@@ -1,11 +1,6 @@
 package main;
 
-
-import lejos.hardware.Sound;
-import lejos.utility.Delay;
 import lib.Controller;
-
-import java.io.File;
 
 
 public class Main {
