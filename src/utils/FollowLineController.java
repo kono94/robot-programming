@@ -2,9 +2,7 @@ package utils;
 
 import components.Drivable;
 import components.MyColorSensor;
-import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.hardware.sensor.SensorMode;
 import lejos.utility.Delay;
 import lib.Controller;
 
@@ -23,6 +21,7 @@ public class FollowLineController {
     }
 
     public void init(){
+
         System.out.println("Measuring dark color... waiting for click");
         float darkColor = measureCurrentColorOnClick();
         System.out.println("darkColor: " + darkColor);
@@ -33,10 +32,13 @@ public class FollowLineController {
         Delay.msDelay(1000);
 
 
+        //float darkColor = 0.05f;
+        //float lightColor = 0.49f;
         this.normalizer = new Normalizer(darkColor, lightColor, -1, 1);
         pid = new PIDController(0);
         colorSensor.switchToRedMode();
     }
+
 
     private float measureCurrentColorOnClick(){
         float color = -1;
@@ -56,8 +58,7 @@ public class FollowLineController {
         new Thread(() -> {
             while(Controller.RUN){
                 int turn = pid.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
-                drivable.drive(10, turn);
-                System.out.println(turn);
+                drivable.drive(15, turn);
             }
         }).start();
     }

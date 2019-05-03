@@ -21,12 +21,14 @@ public class Controller {
     private MyColorSensor primaryColorSensor;
     private EV3TouchSensor primaryTouchSensor;
 
-    private boolean isRemote;
+    // when true => is running locally on the robot,
+    // when false => using RMI
+    private boolean isRunningOnDevice;
 
-    public Controller(boolean isRemote) {
-        this.isRemote = isRemote;
-        if(this.isRemote){
-            RemoteEV3 ev3 = null;
+    public Controller(boolean isRunningOnDevice) {
+        this.isRunningOnDevice = isRunningOnDevice;
+        if(!this.isRunningOnDevice){
+            RemoteEV3 ev3;
             try {
                 ev3 = new RemoteEV3(Constants.REMOTE_HOST);
                 ev3.setDefault();

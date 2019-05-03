@@ -1,9 +1,12 @@
 package utils;
 
+import lejos.hardware.Sound;
+import lejos.utility.Delay;
+
 public class PIDController {
-    private final float Kp = 50f;
-    private final float Ki = 0.05f;
-    private final float Kd = 10000f;
+    private final float Kp = 60f;
+    private final float Ki = 0.2f;
+    private final float Kd = 15000f;
 
     private float setPoint;
     private float previousError = 0f;
@@ -14,8 +17,9 @@ public class PIDController {
     private int dt = 1;
     private int highLimitAdjustment = 100;
     private int lowLimitAdjustment = -100;
-    private int maxIntegral = 100;
-    private int minIntegral = -100;
+    private int maxIntegral = 99;
+    private int minIntegral = -99;
+    private int msDelay = 100;
 
     public PIDController(float setPoint) {
         this.setPoint = setPoint;
@@ -33,19 +37,23 @@ public class PIDController {
         integral += Ki * error * dt;
         // Differential
         derivative = (error - previousError) / dt;
-        System.out.println("error: " + Kp * error + " integral: " + integral + " derivative: " + Kd * derivative);
+       // System.out.println("error: " + Kp * error + " integral: " + integral + " derivative: " + Kd * derivative);
 
         if (integral > maxIntegral) integral = maxIntegral;
         if (integral < minIntegral) integral = minIntegral;
 
+        System.out.print("currentSensorValue:" + currentSensorValue + "error: " + Kp * error + " integral: " + integral + " derivative: " + Kd * derivative);
+
         int adjustment = (int) (Kp * error + integral + Kd * derivative);
+        System.out.println("adjustment" + adjustment);
         if (adjustment > highLimitAdjustment) adjustment = highLimitAdjustment;
         if (adjustment < lowLimitAdjustment) adjustment = lowLimitAdjustment;
 
         previousError = error;
         dt = (int) (System.currentTimeMillis() - this.cycleTime);
         this.cycleTime = System.currentTimeMillis();
-        return adjustment;
+        //todo: needs to be inverted to match turn
+        return -adjustment;
     }
 
 /*

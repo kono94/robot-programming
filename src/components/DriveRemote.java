@@ -1,6 +1,5 @@
 package components;
 
-import lejos.hardware.Sound;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.utility.Delay;
 
@@ -51,17 +50,17 @@ public class DriveRemote implements Drivable {
                  + => drive right
              */
 
-            if(turn > 0 && turn <= 50){
+            if(turn > 0 && turn < 100){
                 right.setSpeed(customSpeed);
                 right.forward();
                 left.setSpeed((int) (customSpeed * ((100 - turn)/ (double)100)));
                 left.forward();
-            }else if(turn > 50){
+            }else if(turn == 100){
                 right.setSpeed(customSpeed);
                 right.forward();
                 left.setSpeed((int) (customSpeed * ((turn)/ (double)100)));
                 left.backward();
-            }else if(turn >= -50){
+            }else if(turn > -100){
                 left.setSpeed(customSpeed);
                 left.forward();
                 right.setSpeed((int) (customSpeed * (100 -(-turn))/(double)100));
@@ -72,9 +71,6 @@ public class DriveRemote implements Drivable {
                 right.setSpeed((int) (customSpeed * (-turn)/(double)100));
                 right.backward();
             }
-
-            //System.out.println("Left-Speed: " + left.getSpeed());
-           // System.out.println("Right-Speed: " + right.getSpeed());
 
             /*
             if(speed > 0){

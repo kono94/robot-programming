@@ -39,18 +39,17 @@ public class Drive implements Drivable{
                  - => drive left
                  + => drive right
              */
-
-        if(turn > 0 && turn <= 50){
+        if(turn > 0 && turn < 100){
             right.setSpeed(customSpeed);
             right.forward();
             left.setSpeed((int) (customSpeed * ((100 - turn)/ (double)100)));
             left.forward();
-        }else if(turn > 50){
+        }else if(turn == 100){
             right.setSpeed(customSpeed);
             right.forward();
             left.setSpeed((int) (customSpeed * ((turn)/ (double)100)));
             left.backward();
-        }else if(turn >= -50){
+        }else if(turn > -100){
             left.setSpeed(customSpeed);
             left.forward();
             right.setSpeed((int) (customSpeed * (100 -(-turn))/(double)100));
