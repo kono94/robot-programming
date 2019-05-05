@@ -10,7 +10,7 @@ public class RegressionAdjuster implements Adjuster {
 
     private float min;
     private float max;
-    double[] weights;
+    private double[] weights;
 
     public RegressionAdjuster(float min, float max){
         this.min = min;

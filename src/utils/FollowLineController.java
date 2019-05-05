@@ -17,7 +17,6 @@ public class FollowLineController {
         this.drivable = drivable;
         this.colorSensor = colorSensor;
         this.touchSensor = touchSensor;
-        int k = 3;
     }
 
     public void init(){
@@ -35,11 +34,12 @@ public class FollowLineController {
         float darkColor = 0.05f;
         float lightColor = 0.45f;
         normalizer = new Normalizer(darkColor, lightColor, -1, 1);
-        lineAdjuster = new PIDController(0);
+///        lineAdjuster = new PIDController(0);
+
+        lineAdjuster = new SimplePID();
         //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
         colorSensor.switchToRedMode();
     }
-
 
     private float measureCurrentColorOnClick(){
         float color = -1;

@@ -1,16 +1,16 @@
 package utils;
 
 public class IntegralManager{
-    private static final int SampleRange = 10;
-
+    private int sampleRange;
     private float[] yValues;
     private int index;
     private Normalizer normalizer;
 
-    public IntegralManager(){
-        yValues = new float[SampleRange];
+    public IntegralManager(int sampleRange){
+        this.sampleRange = sampleRange;
+        yValues = new float[sampleRange];
         index = 0;
-        normalizer = new Normalizer(0, SampleRange, -1, 1);
+        normalizer = new Normalizer(0, this.sampleRange, -1, 1);
     }
 
     /**
@@ -45,7 +45,16 @@ public class IntegralManager{
      * @param y current error value
      */
     public void feed(float y){
-        index = ++index % SampleRange;
+        index = ++index % sampleRange;
         yValues[index] = y;
+    }
+
+    /**
+     * Resets integral calculation to 0
+     */
+    public void reset(){
+        for (int i = 0; i < yValues.length; i++) {
+            yValues[i] = 0;
+        }
     }
 }
