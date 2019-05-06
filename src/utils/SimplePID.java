@@ -5,6 +5,14 @@ public class SimplePID implements Adjuster{
     ProportionalManager proportionalManager;
     DifferentialManager differentialManager;
 
+    /*
+    values for follow line remote:
+    P = 80
+    I = 50
+    D = 40
+     */
+
+
     private float Kp = 80;
     private float Ki = 50;
     private float Kd = 40;
@@ -12,7 +20,10 @@ public class SimplePID implements Adjuster{
     private int maxAdjustment = 100;
     private float desiredValue;
 
-    public SimplePID(float desiredValue){
+    public SimplePID(float desiredValue, float p, float i, float d){
+        Kp = p;
+        Ki = i;
+        Kd = d;
         this.desiredValue = desiredValue;
         this.integralManager = new IntegralManager();
         this.proportionalManager = new ProportionalManager();

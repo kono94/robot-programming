@@ -1,7 +1,9 @@
 package utils;
 
+import com.sun.tools.internal.jxc.ap.Const;
 import components.Drivable;
 import components.MyDistanceSensor;
+import config.Constants;
 import lib.Controller;
 
 public class SpaceKeeperController {
@@ -15,7 +17,7 @@ public class SpaceKeeperController {
     }
 
     public void init(){
-        distanceAdjuster = new SimplePID(0.1f);
+        distanceAdjuster = new SimplePID(0.25f, 800, 0, 0);
     }
 
     public void start(){
@@ -24,10 +26,10 @@ public class SpaceKeeperController {
             while(Controller.RUN){
                 float distanceValue = distanceSensor.getCurrentDistance();
                 if(!Float.isFinite(distanceValue)) continue;
-
                 int speed = distanceAdjuster.calculateAdjustment(distanceValue);
-                 System.out.println("SPEED: " + speed);
-                drivable.setSpeed(speed);
+                System.out.println("SPEED: " + speed);
+                drivable.setSpeed((-speed * Constants.DEFAULT_SPEED) / 100);
+                drivable.drive(0);
             }
         }).start();
     }

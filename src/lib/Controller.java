@@ -64,7 +64,6 @@ public class Controller {
     public void holdDistance(){
         spaceKeeperController = new SpaceKeeperController(drivable, primaryDistanceSensor);
         spaceKeeperController.init();
-        registerShutdownOnTouchSensorClick();
         spaceKeeperController.start();
     }
 

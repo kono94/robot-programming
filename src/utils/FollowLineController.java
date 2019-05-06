@@ -40,7 +40,7 @@ public class FollowLineController {
         normalizer = new Normalizer(darkColor, lightColor, -1, 1);
         lineAdjuster = new PIDController(0);
 
-       // lineAdjuster = new SimplePID(0);
+       // lineAdjuster = new SimplePID(0, 80, 50, 40);
         //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
         colorSensor.switchToRedMode();
     }
