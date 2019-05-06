@@ -1,14 +1,17 @@
 package components;
 
+import config.Constants;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Drive implements Drivable{
     private EV3LargeRegulatedMotor left;
     private EV3LargeRegulatedMotor right;
+    private int speed;
 
     public Drive(EV3LargeRegulatedMotor left, EV3LargeRegulatedMotor right){
         this.left = left;
         this.right = right;
+        speed = Constants.DEFAULT_SPEED;
     }
 
     public void drive(int speed, int turn){
@@ -62,8 +65,20 @@ public class Drive implements Drivable{
         }
     }
 
+    public void drive(int turn){
+        drive(speed, turn);
+    }
+
     @Override
     public void rotateOnPlace(int speed, int degree) {
 
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }

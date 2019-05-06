@@ -2,11 +2,13 @@ package lib;
 
 import components.Drivable;
 import components.MyColorSensor;
+import components.MyDistanceSensor;
 import config.Constants;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.remote.ev3.RemoteEV3;
 import org.jfree.util.Log;
 import utils.FollowLineController;
+import utils.SpaceKeeperController;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
@@ -17,9 +19,11 @@ public class Controller {
     public static volatile boolean RUN = false;
     private ResourceManager resourceManager;
     private FollowLineController followLineController;
+    private SpaceKeeperController spaceKeeperController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
     private EV3TouchSensor primaryTouchSensor;
+    private MyDistanceSensor primaryDistanceSensor;
 
     // when true => is running locally on the robot,
     // when false => using RMI
@@ -46,14 +50,22 @@ public class Controller {
         primaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_PORT));
         drivable = resourceManager.createDrivable(Constants.MOTOR_PORT_LEFT, Constants.MOTOR_PORT_RIGHT);
         primaryTouchSensor = resourceManager.createTouchSensor(Constants.TOUCH_SENSOR_PORT);
+        primaryDistanceSensor = new MyDistanceSensor(resourceManager.createDistanceSensor(Constants.DISTANCE_SENSOR_PORT));
         Controller.RUN = true;
     }
 
     public void followLine(){
         followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor);
         followLineController.init();
-        registerShutdownOnTouchSensorClick();
+        // registerShutdownOnTouchSensorClick();
         followLineController.start();
+    }
+
+    public void holdDistance(){
+        spaceKeeperController = new SpaceKeeperController(drivable, primaryDistanceSensor);
+        spaceKeeperController.init();
+        registerShutdownOnTouchSensorClick();
+        spaceKeeperController.start();
     }
 
     public void registerShutdownOnTouchSensorClick(){

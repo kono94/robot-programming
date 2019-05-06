@@ -5,22 +5,33 @@ public class SimplePID implements Adjuster{
     ProportionalManager proportionalManager;
     DifferentialManager differentialManager;
 
-    private float Kp = 60f;
-    private float Ki = 20f;
-    private float Kd = 30f;
+    private float Kp = 80;
+    private float Ki = 50;
+    private float Kd = 40;
+    private int minAdjustment = -100;
+    private int maxAdjustment = 100;
+    private float desiredValue;
 
-    public SimplePID(){
+    public SimplePID(float desiredValue){
+        this.desiredValue = desiredValue;
         this.integralManager = new IntegralManager();
         this.proportionalManager = new ProportionalManager();
         this.differentialManager = new DifferentialManager();
     }
 
     @Override
-    public int calculateAdjustment(float error){
+    public int calculateAdjustment(float normSensorValue){
+        System.out.println(normSensorValue);
+        float error = desiredValue - normSensorValue;
         float pValue = proportionalManager.feedAndGet(error);
         float iValue = integralManager.feedAndGet(error);
         float dValue = differentialManager.feedAndGet(error);
-        System.out.println("P: " + Kp * pValue + " I: " + Ki * iValue  +  " D:" + Kd * dValue  + "\t adjustment: " + (Kp * pValue + Ki * iValue + Kd * dValue));
-        return (int) (Kp * pValue + Ki * iValue + Kd * dValue);
+
+        //System.out.println("P: " + Kp * pValue + " I: " + Ki * iValue  +  " D:" + Kd * dValue  + "\t adjustment: " + (Kp * pValue + Ki * iValue + Kd * dValue));
+        int adjustment = (int) (Kp * pValue + Ki * iValue + Kd * dValue);
+
+        if(adjustment < minAdjustment) return minAdjustment;
+        else if(adjustment > maxAdjustment) return maxAdjustment;
+        else return adjustment;
     }
 }

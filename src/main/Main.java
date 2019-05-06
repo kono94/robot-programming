@@ -8,6 +8,7 @@ public class Main {
         boolean isRunningOnDevice =  System.getProperty("os.arch").toLowerCase().matches("arm");
         Controller c = new Controller(isRunningOnDevice);
         c.init();
-        c.followLine();
+        // c.followLine();
+        c.holdDistance();
     }
 }

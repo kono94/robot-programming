@@ -1,16 +1,15 @@
 package utils;
 
 public class IntegralManager{
-    private int sampleRange;
+    private final int sampleRange = 15;
     private float[] yValues;
     private int index;
     private Normalizer normalizer;
 
-    public IntegralManager(int sampleRange){
-        this.sampleRange = sampleRange;
+    public IntegralManager(){
         yValues = new float[sampleRange];
         index = 0;
-        normalizer = new Normalizer(0, this.sampleRange, -1, 1);
+        normalizer = new Normalizer(-this.sampleRange, this.sampleRange, -1, 1);
     }
 
     /**

@@ -1,5 +1,6 @@
 package components;
 
+import config.Constants;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.utility.Delay;
 
@@ -8,10 +9,12 @@ import java.rmi.RemoteException;
 public class DriveRemote implements Drivable {
     private RMIRegulatedMotor left;
     private RMIRegulatedMotor right;
+    private int speed;
 
     public DriveRemote(RMIRegulatedMotor left, RMIRegulatedMotor right) {
         this.left = left;
         this.right = right;
+        this.speed = Constants.DEFAULT_SPEED;
     }
 
     /**
@@ -90,6 +93,11 @@ public class DriveRemote implements Drivable {
         }
     }
 
+    public void drive(int turn){
+        this.drive(speed, turn);
+    }
+
+
     public void rotateOnPlace(int speed, int degree) {
         try {
             right.stop(true);
@@ -104,5 +112,13 @@ public class DriveRemote implements Drivable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }
