@@ -43,7 +43,6 @@ public class DriveRemote implements Drivable {
                  0.01     0.06        0.14
                  -50       0          100
 
-
                             I------------------I
                 0.16(blue)       0.06(black)
 
@@ -54,46 +53,39 @@ public class DriveRemote implements Drivable {
              */
 
             if(turn >= 0 && turn < 80){
-                right.setSpeed(customSpeed);
-                left.setSpeed((int) (customSpeed * ((100 - turn)/ (double)100)));
                 if(speed > 0){
+                    right.setSpeed(customSpeed);
+                    left.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
                     right.forward();
                     left.forward();
                 }else{
+                    left.setSpeed(customSpeed);
+                    right.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
                     right.backward();
                     left.backward();
                 }
             }else if(turn > 80){
                 right.setSpeed(customSpeed);
                 left.setSpeed((int) (customSpeed * ((turn)/ (double)100)));
-                if(speed > 0){
-                    right.forward();
-                    left.backward();
-                }else{
-                    right.backward();
-                    left.forward();
-                }
+                right.forward();
+                left.backward();
             }else if(turn > -80){
-                left.setSpeed(customSpeed);
-                right.setSpeed((int) (customSpeed * (100 -(-turn))/(double)100));
                 if(speed > 0){
+                    left.setSpeed(customSpeed);
+                    right.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
                     right.forward();
                     left.forward();
                 }else{
+                    right.setSpeed(customSpeed);
+                    left.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
                     right.backward();
                     left.backward();
                 }
             }else{
                 left.setSpeed(customSpeed);
                 right.setSpeed((int) (customSpeed * (-turn)/(double)100));
-                if(speed > 0){
-                    left.forward();
-                    right.backward();
-                }else{
-                    left.backward();
-                    right.forward();
-                }
-
+                left.forward();
+                right.backward();
             }
         } catch (RemoteException e) {
             e.printStackTrace();

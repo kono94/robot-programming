@@ -24,6 +24,7 @@ public class Controller {
     private MyColorSensor primaryColorSensor;
     private EV3TouchSensor primaryTouchSensor;
     private MyDistanceSensor primaryDistanceSensor;
+    private MyColorSensor secondaryColorSensor;
 
     // when true => is running locally on the robot,
     // when false => using RMI
@@ -51,11 +52,12 @@ public class Controller {
         drivable = resourceManager.createDrivable(Constants.MOTOR_PORT_LEFT, Constants.MOTOR_PORT_RIGHT);
         primaryTouchSensor = resourceManager.createTouchSensor(Constants.TOUCH_SENSOR_PORT);
         primaryDistanceSensor = new MyDistanceSensor(resourceManager.createDistanceSensor(Constants.DISTANCE_SENSOR_PORT));
+        secondaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_2_PORT));
         Controller.RUN = true;
     }
 
     public void followLine(){
-        followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor);
+        followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor, secondaryColorSensor);
         followLineController.init();
         // registerShutdownOnTouchSensorClick();
         followLineController.start();

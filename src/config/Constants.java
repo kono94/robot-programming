@@ -9,7 +9,9 @@ public class Constants {
     public static final Port MOTOR_PORT_LEFT = MotorPort.A;
     public static final Port MOTOR_PORT_RIGHT = MotorPort.D;
     public static final Port COLOR_SENSOR_PORT = SensorPort.S2;
+    public static final Port COLOR_SENSOR_2_PORT = SensorPort.S4;
     public static final Port TOUCH_SENSOR_PORT = SensorPort.S1;
     public static final Port DISTANCE_SENSOR_PORT = SensorPort.S3;
+
     public static final int DEFAULT_SPEED = 15;
 }

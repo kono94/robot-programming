@@ -40,7 +40,7 @@ public class SimplePID implements Adjuster{
 
         //System.out.println("P: " + Kp * pValue + " I: " + Ki * iValue  +  " D:" + Kd * dValue  + "\t adjustment: " + (Kp * pValue + Ki * iValue + Kd * dValue));
         int adjustment = (int) (Kp * pValue + Ki * iValue + Kd * dValue);
-
+        adjustment = -adjustment;
         if(adjustment < minAdjustment) return minAdjustment;
         else if(adjustment > maxAdjustment) return maxAdjustment;
         else return adjustment;
