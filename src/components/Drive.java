@@ -42,25 +42,39 @@ public class Drive implements Drivable{
                  - => drive left
                  + => drive right
              */
-        if(turn > 0 && turn < 100){
+        if (turn >= 0 && turn < 80) {
+            if (speed > 0) {
+                right.setSpeed(customSpeed);
+                left.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
+                right.forward();
+                left.forward();
+            } else {
+                left.setSpeed(customSpeed);
+                right.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
+                right.backward();
+                left.backward();
+            }
+        } else if (turn > 80) {
             right.setSpeed(customSpeed);
-            right.forward();
-            left.setSpeed((int) (customSpeed * ((100 - turn)/ (double)100)));
-            left.forward();
-        }else if(turn == 100){
-            right.setSpeed(customSpeed);
-            right.forward();
             left.setSpeed((int) (customSpeed * ((turn)/ (double)100)));
-            left.backward();
-        }else if(turn > -100){
-            left.setSpeed(customSpeed);
-            left.forward();
-            right.setSpeed((int) (customSpeed * (100 -(-turn))/(double)100));
             right.forward();
+            left.backward();
+        } else if (turn > -80) {
+            if (speed > 0) {
+                left.setSpeed(customSpeed);
+                right.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
+                right.forward();
+                left.forward();
+            } else {
+                right.setSpeed(customSpeed);
+                left.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
+                right.backward();
+                left.backward();
+            }
         }else{
             left.setSpeed(customSpeed);
-            left.forward();
             right.setSpeed((int) (customSpeed * (-turn)/(double)100));
+            left.forward();
             right.backward();
         }
     }

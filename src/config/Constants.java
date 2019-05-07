@@ -13,5 +13,6 @@ public class Constants {
     public static final Port TOUCH_SENSOR_PORT = SensorPort.S1;
     public static final Port DISTANCE_SENSOR_PORT = SensorPort.S3;
 
+
     public static final int DEFAULT_SPEED = 15;
 }
