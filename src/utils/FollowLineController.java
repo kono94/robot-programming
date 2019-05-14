@@ -2,6 +2,7 @@ package utils;
 
 import components.Drivable;
 import components.MyColorSensor;
+import lejos.hardware.Button;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.utility.Delay;
 import lib.Controller;
@@ -22,6 +23,12 @@ public class FollowLineController {
         this.touchSensor = touchSensor;
         this.secondaryColorSensor = secondaryColorSensor;
 
+    }
+
+    public FollowLineController(Drivable drivable, MyColorSensor colorSensor, MyColorSensor secondaryColorSensor) {
+        this.drivable = drivable;
+        this.colorSensor = colorSensor;
+        this.secondaryColorSensor = secondaryColorSensor;
     }
 
     public void init(){
@@ -53,13 +60,18 @@ public class FollowLineController {
 
     private TwoColors measureCurrentColorOnClick(MyColorSensor primay, MyColorSensor secondary) {
         TwoColors twoColors = null;
-        float[] touchFetch = new float[1];
-        do {
-            touchSensor.fetchSample(touchFetch, 0);
-            if (touchFetch[0] == 1) {
-                twoColors = new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
-            }
-        } while (twoColors == null);
+        if(touchSensor != null) {
+            float[] touchFetch = new float[1];
+            do {
+                touchSensor.fetchSample(touchFetch, 0);
+                if (touchFetch[0] == 1) {
+                    twoColors = new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
+                }
+            } while (twoColors == null);
+        } else {
+            Button.ENTER.waitForPressAndRelease();
+            twoColors = new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
+        }
         return twoColors;
     }
 

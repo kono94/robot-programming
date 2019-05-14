@@ -4,6 +4,7 @@ import components.Drivable;
 import components.MyColorSensor;
 import components.MyDistanceSensor;
 import config.Constants;
+import lejos.hardware.Button;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.remote.ev3.RemoteEV3;
 import org.jfree.util.Log;
@@ -50,14 +51,15 @@ public class Controller {
     public void init(){
         primaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_PORT));
         drivable = resourceManager.createDrivable(Constants.MOTOR_PORT_LEFT, Constants.MOTOR_PORT_RIGHT);
-        primaryTouchSensor = resourceManager.createTouchSensor(Constants.TOUCH_SENSOR_PORT);
+        //primaryTouchSensor = resourceManager.createTouchSensor(Constants.TOUCH_SENSOR_PORT);
         primaryDistanceSensor = new MyDistanceSensor(resourceManager.createDistanceSensor(Constants.DISTANCE_SENSOR_PORT));
         secondaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_2_PORT));
         Controller.RUN = true;
     }
 
     public void followLine(){
-        followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor, secondaryColorSensor);
+//        followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor, secondaryColorSensor);
+        followLineController = new FollowLineController(drivable, primaryColorSensor, secondaryColorSensor);
         followLineController.init();
         // registerShutdownOnTouchSensorClick();
         followLineController.start();
@@ -71,12 +73,9 @@ public class Controller {
 
     public void registerShutdownOnTouchSensorClick(){
         new Thread(() -> {
-            float[] b = new float[1];
             while (RUN) {
-                primaryTouchSensor.fetchSample(b, 0);
-                if (b[0] == 1) {
-                    Controller.RUN = false;
-                }
+                Button.UP.waitForPressAndRelease();
+                Controller.RUN = false;
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -85,6 +84,7 @@ public class Controller {
             }
         }).start();
     }
+
     public void setBackupShutdown(int seconds){
         new Thread(() -> {
             try {
