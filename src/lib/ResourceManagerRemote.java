@@ -13,7 +13,6 @@ import java.util.List;
 public class ResourceManagerRemote extends ResourceManagerLocal {
     private RemoteEV3 ev3;
     private List<RMIRegulatedMotor> regulatedMotors;
-    private List<Closeable> sensors;
 
     ResourceManagerRemote(RemoteEV3 ev3) {
         this.ev3 = ev3;

@@ -14,34 +14,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceManagerLocal implements ResourceManager{
-    private List<Closeable> peripherals;
+    protected List<Closeable> sensors;
 
     public ResourceManagerLocal(){
-        peripherals = new ArrayList<>();
+        sensors = new ArrayList<>();
     }
 
     public EV3UltrasonicSensor createDistanceSensor(Port port){
         EV3UltrasonicSensor sensor = new EV3UltrasonicSensor(port);
         sensor.setCurrentMode("Distance");
-        peripherals.add(sensor);
+        sensors.add(sensor);
         return sensor;
     }
 
     public EV3TouchSensor createTouchSensor(Port port){
         EV3TouchSensor sensor = new EV3TouchSensor(port);
-        peripherals.add(sensor);
+        sensors.add(sensor);
         return sensor;
     }
 
     public EV3ColorSensor createColorSensor(Port port){
         EV3ColorSensor colorSensor = new EV3ColorSensor(port);
-        peripherals.add(colorSensor);
+        sensors.add(colorSensor);
         return colorSensor;
     }
 
     public EV3GyroSensor createGyroSensor(Port port) {
         EV3GyroSensor gyroSensor = new EV3GyroSensor(port);
-        peripherals.add(gyroSensor);
+        sensors.add(gyroSensor);
         return gyroSensor;
     }
 
@@ -52,11 +52,11 @@ public class ResourceManagerLocal implements ResourceManager{
     public EV3LargeRegulatedMotor createLargeRegulatedMotor(Port port){
         System.out.println(port.getName());
         EV3LargeRegulatedMotor motor = new EV3LargeRegulatedMotor(port);
-        peripherals.add(motor);
+        sensors.add(motor);
         return motor;
     }
 
-    public List<Closeable> getPeripherals() {
-        return peripherals;
+    public List<Closeable> getSensors() {
+        return sensors;
     }
 }
