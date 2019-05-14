@@ -8,6 +8,7 @@ import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RemoteEV3;
+
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class ResourceManagerRemote implements ResourceManager {
 
     private void freeResourcesOnShutdown(){
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println(Thread.getAllStackTraces().size());
             System.out.println("Shutdown hook");
             try {
                 for (RMIRegulatedMotor regulatedMotor : regulatedMotors) {
