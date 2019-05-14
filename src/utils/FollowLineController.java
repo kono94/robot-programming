@@ -75,7 +75,7 @@ public class FollowLineController {
                 }
             } while (twoColors == null);
         } else {
-            Button.ENTER.waitForPressAndRelease();
+            Button.DOWN.waitForPressAndRelease();
             twoColors = new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
         }
         return twoColors;

@@ -7,7 +7,6 @@ import config.Constants;
 import lejos.hardware.Button;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.remote.ev3.RemoteEV3;
-import org.jfree.util.Log;
 import utils.FollowLineController;
 import utils.SpaceKeeperController;
 
@@ -33,7 +32,7 @@ public class Controller {
 
     public Controller(boolean isRunningOnDevice) {
         this.isRunningOnDevice = isRunningOnDevice;
-        if(!this.isRunningOnDevice){
+        if (!this.isRunningOnDevice) {
             RemoteEV3 ev3;
             try {
                 ev3 = new RemoteEV3(Constants.REMOTE_HOST);
@@ -43,12 +42,12 @@ public class Controller {
                 throw new RuntimeException("Could not setup RemoteEV3");
             }
             resourceManager = new ResourceManagerRemote(ev3);
-        }else{
+        } else {
             resourceManager = new ResourceManagerLocal();
         }
     }
 
-    public void init(){
+    public void init() {
         primaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_PORT));
         drivable = resourceManager.createDrivable(Constants.MOTOR_PORT_LEFT, Constants.MOTOR_PORT_RIGHT);
         //primaryTouchSensor = resourceManager.createTouchSensor(Constants.TOUCH_SENSOR_PORT);
@@ -57,7 +56,7 @@ public class Controller {
         Controller.RUN = true;
     }
 
-    public void followLine(){
+    public void followLine() {
 //        followLineController = new FollowLineController(drivable, primaryColorSensor, primaryTouchSensor, secondaryColorSensor);
         followLineController = new FollowLineController(drivable, primaryColorSensor, secondaryColorSensor);
         followLineController.init();
@@ -65,23 +64,16 @@ public class Controller {
         followLineController.start();
     }
 
-    public void holdDistance(){
+    public void holdDistance() {
         spaceKeeperController = new SpaceKeeperController(drivable, primaryDistanceSensor);
         spaceKeeperController.init();
         spaceKeeperController.start();
     }
 
-    public void registerShutdownOnTouchSensorClick(){
+    public void registerShutdownOnTouchSensorClick() {
         new Thread(() -> {
-            while (RUN) {
-                Button.UP.waitForPressAndRelease();
-                Controller.RUN = false;
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    Log.error(e);
-                }
-            }
+            Button.UP.waitForPressAndRelease();
+            Controller.RUN = false;
         }).start();
     }
 }

@@ -58,6 +58,7 @@ public class ResourceManagerRemote implements ResourceManager {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println(Thread.getAllStackTraces().size());
             System.out.println("Shutdown hook");
+            Controller.RUN = false;
             try {
                 for (RMIRegulatedMotor regulatedMotor : regulatedMotors) {
                     regulatedMotor.close();
@@ -65,10 +66,10 @@ public class ResourceManagerRemote implements ResourceManager {
                 for (Closeable sensor : sensors) {
                     sensor.close();
                 }
-                System.exit(0);
             } catch (Exception e) {
                 System.err.println(e);
             }
+            System.out.println(Thread.getAllStackTraces().size());
         }));
     }
 
