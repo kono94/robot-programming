@@ -21,7 +21,6 @@ public class FollowLineController {
         this.colorSensor = colorSensor;
         this.touchSensor = touchSensor;
         this.secondaryColorSensor = secondaryColorSensor;
-
     }
 
     public void init(){
@@ -45,9 +44,16 @@ public class FollowLineController {
         */
         normalizer = new Normalizer(darkColor.primary, lightColor.primary, -1, 1);
         secondaryNormalizer = new Normalizer(darkColor.secondary, lightColor.secondary, -1, 1);
-        // lineAdjuster = new PIDController(0);
+        PIDController pid = new PIDController(0);
+        pid.setKp(65f);
+        pid.setKi(0.1f);
+        pid.setKd(8000);
+        pid.setMaxIntegral(50);
+        pid.setMinIntegral(-50);
 
-        lineAdjuster = new SimplePID(0, 80, 50, 40);
+        lineAdjuster = pid;
+
+        //lineAdjuster = new SimplePID(0, 80, 50, 40);
         //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
     }
 

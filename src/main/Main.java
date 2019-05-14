@@ -9,7 +9,7 @@ public class Main {
         Controller c = new Controller(isRunningOnDevice);
         c.init();
         c.followLine();
-        c.holdDistance();
+        //c.holdDistance();
         c.registerShutdownOnTouchSensorClick();
     }
 }

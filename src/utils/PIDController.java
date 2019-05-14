@@ -1,9 +1,9 @@
 package utils;
 
 public class PIDController implements Adjuster{
-    private final float Kp = 60f;
-    private final float Ki = 0.1f;
-    private final float Kd = 7000f;
+    private float Kp = 65f;
+    private float Ki = 0.1f;
+    private float Kd = 8000f;
 
     private float setPoint;
     private float previousError = 0f;
@@ -22,6 +22,7 @@ public class PIDController implements Adjuster{
         this.setPoint = setPoint;
     }
 
+
     @Override
     public int calculateAdjustment(float currentSensorValue) {
         if (this.cycleTime == 0) {
@@ -35,7 +36,7 @@ public class PIDController implements Adjuster{
         integral += Ki * error * dt;
         // Differential
         derivative =  (error - previousError) / dt;
-        if(Math.abs(Kd * derivative) > 80) integral = 0;
+        //if(Math.abs(Kd * derivative) > 80) integral = 0;
 
         if (integral > maxIntegral) integral = maxIntegral;
         if (integral < minIntegral) integral = minIntegral;
@@ -54,21 +55,27 @@ public class PIDController implements Adjuster{
         return -adjustment;
     }
 
-/*
-    public static void main(String[] args) {
-        PIDController p = new PIDController(0);
-
-        while(true){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            float inp = (float)(Math.random() * -1) + 1;
-            System.out.println("inp "  + inp);
-            System.out.println(p.calculateAdjustment(inp));
-        }
+    public void setSetPoint(float setPoint) {
+        this.setPoint = setPoint;
     }
-    */
 
+    public void setKp(float kp) {
+        Kp = kp;
+    }
+
+    public void setKi(float ki) {
+        Ki = ki;
+    }
+
+    public void setKd(float kd) {
+        Kd = kd;
+    }
+
+    public void setMaxIntegral(int maxIntegral) {
+        this.maxIntegral = maxIntegral;
+    }
+
+    public void setMinIntegral(int minIntegral) {
+        this.minIntegral = minIntegral;
+    }
 }
