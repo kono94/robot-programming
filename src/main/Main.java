@@ -10,6 +10,6 @@ public class Main {
         c.init();
         c.followLine();
         //c.holdDistance();
-        c.registerShutdownOnTouchSensorClick();
+        c.registerShutdownOnClick();
     }
 }

@@ -13,16 +13,9 @@ public class FollowLineController {
     private Normalizer secondaryNormalizer;
     private Drivable drivable;
     private MyColorSensor colorSensor;
-    private EV3TouchSensor touchSensor;
     private Adjuster lineAdjuster;
     private MyColorSensor secondaryColorSensor;
 
-    public FollowLineController(Drivable drivable, MyColorSensor colorSensor, EV3TouchSensor touchSensor, MyColorSensor secondaryColorSensor) {
-        this.drivable = drivable;
-        this.colorSensor = colorSensor;
-        this.touchSensor = touchSensor;
-        this.secondaryColorSensor = secondaryColorSensor;
-    }
 
     public FollowLineController(Drivable drivable, MyColorSensor colorSensor, MyColorSensor secondaryColorSensor) {
         this.drivable = drivable;
@@ -30,7 +23,7 @@ public class FollowLineController {
         this.secondaryColorSensor = secondaryColorSensor;
     }
 
-    public void init(){
+    public void init() {
         /*
         colorSensor.switchToRedMode();
         secondaryColorSensor.switchToRedMode();
@@ -65,26 +58,14 @@ public class FollowLineController {
     }
 
     private TwoColors measureCurrentColorOnClick(MyColorSensor primay, MyColorSensor secondary) {
-        TwoColors twoColors = null;
-        if (touchSensor != null) {
-            float[] touchFetch = new float[1];
-            do {
-                touchSensor.fetchSample(touchFetch, 0);
-                if (touchFetch[0] == 1) {
-                    twoColors = new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
-                }
-            } while (twoColors == null);
-        } else {
-            Button.DOWN.waitForPressAndRelease();
-            twoColors = new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
-        }
-        return twoColors;
+        Button.DOWN.waitForPressAndRelease();
+        return new TwoColors(primay.getCurrentRedValue(), secondary.getCurrentRedValue());
     }
 
-    public void start(){
+    public void start() {
         System.out.println("Starting follow line mechanic");
         new Thread(() -> {
-            while(Controller.RUN){
+            while (Controller.RUN) {
                 int turn;
                 if (drivable.getSpeed() > 0) {
                     turn = lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
@@ -101,7 +82,7 @@ public class FollowLineController {
         float primary;
         float secondary;
 
-        public TwoColors(float primary, float secondary) {
+        TwoColors(float primary, float secondary) {
             this.primary = primary;
             this.secondary = secondary;
         }

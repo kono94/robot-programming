@@ -18,27 +18,27 @@ public class ResourceManagerRemote implements ResourceManager {
     private List<RMIRegulatedMotor> regulatedMotors;
     private List<Closeable> sensors;
 
-    ResourceManagerRemote(RemoteEV3 ev3){
+    ResourceManagerRemote(RemoteEV3 ev3) {
         this.ev3 = ev3;
         regulatedMotors = new ArrayList<>();
         sensors = new ArrayList<>();
         freeResourcesOnShutdown();
     }
 
-    public EV3UltrasonicSensor createDistanceSensor(Port port){
+    public EV3UltrasonicSensor createDistanceSensor(Port port) {
         EV3UltrasonicSensor sensor = new EV3UltrasonicSensor(port);
         sensor.setCurrentMode("Distance");
         sensors.add(sensor);
         return sensor;
     }
 
-    public EV3TouchSensor createTouchSensor(Port port){
+    public EV3TouchSensor createTouchSensor(Port port) {
         EV3TouchSensor sensor = new EV3TouchSensor(port);
         sensors.add(sensor);
         return sensor;
     }
 
-    public EV3ColorSensor createColorSensor(Port port){
+    public EV3ColorSensor createColorSensor(Port port) {
         EV3ColorSensor colorSensor = new EV3ColorSensor(port);
         sensors.add(colorSensor);
         return colorSensor;
@@ -48,28 +48,31 @@ public class ResourceManagerRemote implements ResourceManager {
         return new DriveRemote(createRegularMotor(motorA), createRegularMotor(motorB));
     }
 
-    public RMIRegulatedMotor createRegularMotor(Port port){
+    private RMIRegulatedMotor createRegularMotor(Port port) {
         RMIRegulatedMotor motor = ev3.createRegulatedMotor(port.getName(), 'L');
         regulatedMotors.add(motor);
         return motor;
     }
 
-    private void freeResourcesOnShutdown(){
+    private void freeResourcesOnShutdown() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println(Thread.getAllStackTraces().size());
-            System.out.println("Shutdown hook");
+            System.out.println("Shutdown: Starting Shutdown-Hook");
             Controller.RUN = false;
             try {
+                Thread.sleep(1000);
                 for (RMIRegulatedMotor regulatedMotor : regulatedMotors) {
                     regulatedMotor.close();
                 }
+                System.out.println("Showdown: Closed RMIRegulatedMotor");
                 for (Closeable sensor : sensors) {
                     sensor.close();
                 }
+                System.out.println("Showdown: Closed Sensors");
             } catch (Exception e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
-            System.out.println(Thread.getAllStackTraces().size());
+            System.out.println("Shutdown: Finished Shutdown");
         }));
     }
 
