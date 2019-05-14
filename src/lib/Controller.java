@@ -5,8 +5,10 @@ import components.MyColorSensor;
 import components.MyDistanceSensor;
 import config.Constants;
 import lejos.hardware.Button;
+import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.remote.ev3.RemoteEV3;
+import utils.EvadeObstacleController;
 import utils.FollowLineController;
 import utils.SpaceKeeperController;
 
@@ -20,10 +22,12 @@ public class Controller {
     private ResourceManager resourceManager;
     private FollowLineController followLineController;
     private SpaceKeeperController spaceKeeperController;
+    private EvadeObstacleController evadeObstacleController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
     private MyDistanceSensor primaryDistanceSensor;
     private MyColorSensor secondaryColorSensor;
+    private EV3GyroSensor gyroSensor;
 
     // when true => is running locally on the robot,
     // when false => using RMI
@@ -51,6 +55,7 @@ public class Controller {
         drivable = resourceManager.createDrivable(Constants.MOTOR_PORT_LEFT, Constants.MOTOR_PORT_RIGHT);
         primaryDistanceSensor = new MyDistanceSensor(resourceManager.createDistanceSensor(Constants.DISTANCE_SENSOR_PORT));
         secondaryColorSensor = new MyColorSensor(resourceManager.createColorSensor(Constants.COLOR_SENSOR_2_PORT));
+        gyroSensor = resourceManager.createGyroSensor(Constants.GYRO_SENSOR_PORT);
         Controller.RUN = true;
     }
 
@@ -64,6 +69,10 @@ public class Controller {
         spaceKeeperController = new SpaceKeeperController(drivable, primaryDistanceSensor);
         spaceKeeperController.init();
         spaceKeeperController.start();
+    }
+
+    public void evadeObstacle() {
+        evadeObstacleController = new EvadeObstacleController(gyroSensor, primaryDistanceSensor);
     }
 
     public void registerShutdownOnClick() {
