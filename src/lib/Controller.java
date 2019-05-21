@@ -3,10 +3,9 @@ package lib;
 import components.Drivable;
 import components.MyColorSensor;
 import components.MyDistanceSensor;
+import components.MyGyroSensor;
 import config.Constants;
 import lejos.hardware.Button;
-import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.remote.ev3.RemoteEV3;
 import utils.EvadeObstacleController;
 import utils.FollowLineController;
@@ -27,7 +26,7 @@ public class Controller {
     private MyColorSensor primaryColorSensor;
     private MyDistanceSensor primaryDistanceSensor;
     private MyColorSensor secondaryColorSensor;
-    private EV3GyroSensor gyroSensor;
+    private MyGyroSensor gyroSensor;
 
     // when true => is running locally on the robot,
     // when false => using RMI
@@ -73,6 +72,8 @@ public class Controller {
 
     public void evadeObstacle() {
         evadeObstacleController = new EvadeObstacleController(gyroSensor, primaryDistanceSensor);
+        evadeObstacleController.init();
+        evadeObstacleController.start();
     }
 
     public void registerShutdownOnClick() {

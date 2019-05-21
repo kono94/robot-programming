@@ -2,10 +2,10 @@ package lib;
 
 import components.Drivable;
 import components.Drive;
+import components.MyGyroSensor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 
@@ -39,9 +39,9 @@ public class ResourceManagerLocal implements ResourceManager{
         return colorSensor;
     }
 
-    public EV3GyroSensor createGyroSensor(Port port) {
-        EV3GyroSensor gyroSensor = new EV3GyroSensor(port);
-        sensors.add(gyroSensor);
+    public MyGyroSensor createGyroSensor(Port port) {
+        MyGyroSensor gyroSensor = new MyGyroSensor(port);
+        sensors.add(gyroSensor.getCloseable());
         return gyroSensor;
     }
 

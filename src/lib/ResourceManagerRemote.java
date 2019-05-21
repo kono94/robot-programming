@@ -2,6 +2,7 @@ package lib;
 
 import components.Drivable;
 import components.DriveRemote;
+import components.MyGyroSensor;
 import lejos.hardware.port.Port;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RemoteEV3;
@@ -30,6 +31,13 @@ public class ResourceManagerRemote extends ResourceManagerLocal {
         RMIRegulatedMotor motor = ev3.createRegulatedMotor(port.getName(), 'L');
         regulatedMotors.add(motor);
         return motor;
+    }
+
+    @Override
+    public MyGyroSensor createGyroSensor(Port port) {
+        MyGyroSensor myGyroSensor = new MyGyroSensor(ev3, port, "Angle");
+        sensors.add(myGyroSensor.getCloseable());
+        return myGyroSensor;
     }
 
     private void freeResourcesOnShutdown() {
