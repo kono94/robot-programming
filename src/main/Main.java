@@ -2,9 +2,13 @@ package main;
 
 import lejos.hardware.Battery;
 import lib.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Main {
+    private static Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
         boolean isRunningOnDevice = System.getProperty("os.arch").toLowerCase().matches("arm");
         Controller c = new Controller(isRunningOnDevice);
@@ -13,6 +17,6 @@ public class Main {
 //        c.holdDistance();
         c.evadeObstacle();
         c.registerShutdownOnClick();
-        System.out.println("battery: " + Battery.getVoltage());
+        logger.info("battery: " + Battery.getVoltage());
     }
 }

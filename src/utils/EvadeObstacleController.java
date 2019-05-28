@@ -3,8 +3,11 @@ package utils;
 import components.MyDistanceSensor;
 import components.MyGyroSensor;
 import lib.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EvadeObstacleController {
+    private static Logger logger = LoggerFactory.getLogger(EvadeObstacleController.class);
     private MyGyroSensor gyroSensor;
     private MyDistanceSensor distanceSensor;
 
@@ -14,13 +17,13 @@ public class EvadeObstacleController {
     }
 
     public void init() {
-        System.out.println("init evading");
+        logger.info("init evading");
     }
 
     public void start() {
         new Thread(() -> {
             while (Controller.RUN) {
-                System.out.println(gyroSensor.getAngle());
+                logger.debug("Sensor Angle: {}", gyroSensor.getAngle());
             }
         }).start();
     }
