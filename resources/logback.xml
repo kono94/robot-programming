@@ -16,7 +16,7 @@
         </encoder>
     </appender>
 
-    <logger name="de.scr" level="info" additivity="false">
+    <logger name="de.scr" level="debug" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="FILE"/>
     </logger>

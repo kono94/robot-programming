@@ -47,6 +47,7 @@ public class Controller {
 
     private void init() {
         logger.info("Init Controller");
+        Controller.RUN = true;
         initResourceManager();
         createEv3Components();
 
@@ -54,8 +55,6 @@ public class Controller {
 //        followLine();
         evadeObstacle();
         registerShutdownOnClick();
-
-        Controller.RUN = true;
     }
 
     private void initResourceManager() {
@@ -84,28 +83,28 @@ public class Controller {
         gyroSensor = resourceManager.createGyroSensor(Constants.GYRO_SENSOR_PORT);
     }
 
-    public void followLine() {
+    private void followLine() {
         logger.info("Start followLine Mode");
         followLineController = new FollowLineController(drivable, primaryColorSensor, secondaryColorSensor);
         followLineController.init();
         followLineController.start();
     }
 
-    public void holdDistance() {
+    private void holdDistance() {
         logger.info("Start holdDistance Mode");
         spaceKeeperController = new SpaceKeeperController(drivable, primaryDistanceSensor);
         spaceKeeperController.init();
         spaceKeeperController.start();
     }
 
-    public void evadeObstacle() {
+    private void evadeObstacle() {
         logger.info("Start evadeObstacle Mode");
         evadeObstacleController = new EvadeObstacleController(gyroSensor, primaryDistanceSensor);
         evadeObstacleController.init();
         evadeObstacleController.start();
     }
 
-    public void registerShutdownOnClick() {
+    private void registerShutdownOnClick() {
         new Thread(() -> {
             Button.UP.waitForPressAndRelease();
             Controller.RUN = false;

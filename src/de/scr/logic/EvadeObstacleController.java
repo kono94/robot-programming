@@ -21,6 +21,7 @@ public class EvadeObstacleController {
     }
 
     public void start() {
+        logger.info("start evading");
         new Thread(() -> {
             while (Controller.RUN) {
                 logger.debug("Sensor Angle: {}", gyroSensor.getAngle());
