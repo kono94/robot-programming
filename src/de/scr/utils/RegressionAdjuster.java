@@ -1,4 +1,4 @@
-package utils;
+package de.scr.utils;
 
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;

@@ -1,11 +1,10 @@
-package utils;
+package de.scr.utils;
 
-import components.Drivable;
-import components.MyColorSensor;
+import de.scr.components.Drivable;
+import de.scr.components.MyColorSensor;
 import lejos.hardware.Button;
-import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.utility.Delay;
-import lib.Controller;
+import de.scr.lib.Controller;
 
 public class FollowLineController {
 

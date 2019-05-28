@@ -1,4 +1,4 @@
-package config;
+package de.scr.config;
 
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;

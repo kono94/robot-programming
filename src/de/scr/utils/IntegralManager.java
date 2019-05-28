@@ -1,4 +1,4 @@
-package utils;
+package de.scr.utils;
 
 public class IntegralManager{
     private final int sampleRange = 15;

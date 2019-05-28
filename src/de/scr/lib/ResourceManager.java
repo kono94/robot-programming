@@ -1,7 +1,7 @@
-package lib;
+package de.scr.lib;
 
-import components.Drivable;
-import components.MyGyroSensor;
+import de.scr.components.Drivable;
+import de.scr.components.MyGyroSensor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;

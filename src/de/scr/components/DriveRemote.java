@@ -1,6 +1,6 @@
-package components;
+package de.scr.components;
 
-import config.Constants;
+import de.scr.config.Constants;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.utility.Delay;
 

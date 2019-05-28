@@ -1,4 +1,4 @@
-package utils;
+package de.scr.utils;
 
 public class SimplePID implements Adjuster{
     IntegralManager integralManager;

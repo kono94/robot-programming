@@ -1,4 +1,4 @@
-package utils;
+package de.scr.utils;
 
 public class PIDController implements Adjuster{
     private float Kp = 65f;

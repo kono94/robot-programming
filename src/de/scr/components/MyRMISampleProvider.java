@@ -1,4 +1,4 @@
-package components;
+package de.scr.components;
 
 import lejos.remote.ev3.RMISampleProvider;
 

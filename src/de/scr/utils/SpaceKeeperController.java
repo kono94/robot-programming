@@ -1,9 +1,9 @@
-package utils;
+package de.scr.utils;
 
-import components.Drivable;
-import components.MyDistanceSensor;
-import config.Constants;
-import lib.Controller;
+import de.scr.components.Drivable;
+import de.scr.components.MyDistanceSensor;
+import de.scr.config.Constants;
+import de.scr.lib.Controller;
 
 public class SpaceKeeperController {
     private MyDistanceSensor distanceSensor;

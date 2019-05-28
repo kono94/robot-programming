@@ -1,4 +1,4 @@
-package utils;
+package de.scr.utils;
 
 /**
  * Helper class to normalize the given colors

@@ -1,17 +1,17 @@
-package lib;
+package de.scr.lib;
 
-import components.Drivable;
-import components.MyColorSensor;
-import components.MyDistanceSensor;
-import components.MyGyroSensor;
-import config.Constants;
+import de.scr.components.Drivable;
+import de.scr.components.MyColorSensor;
+import de.scr.components.MyDistanceSensor;
+import de.scr.components.MyGyroSensor;
+import de.scr.config.Constants;
 import lejos.hardware.Button;
 import lejos.remote.ev3.RemoteEV3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.EvadeObstacleController;
-import utils.FollowLineController;
-import utils.SpaceKeeperController;
+import de.scr.utils.EvadeObstacleController;
+import de.scr.utils.FollowLineController;
+import de.scr.utils.SpaceKeeperController;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;

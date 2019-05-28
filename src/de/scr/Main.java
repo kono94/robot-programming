@@ -1,7 +1,7 @@
-package main;
+package de.scr;
 
 import lejos.hardware.Battery;
-import lib.Controller;
+import de.scr.lib.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,6 @@
-package components;
+package de.scr.components;
 
-import config.Constants;
+import de.scr.config.Constants;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Drive implements Drivable{

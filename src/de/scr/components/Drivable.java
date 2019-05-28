@@ -1,4 +1,4 @@
-package components;
+package de.scr.components;
 
 public interface Drivable {
     void drive(int speed, int turn);
