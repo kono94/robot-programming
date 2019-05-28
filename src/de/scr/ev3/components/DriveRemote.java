@@ -1,4 +1,4 @@
-package de.scr.components;
+package de.scr.ev3.components;
 
 import de.scr.config.Constants;
 import lejos.remote.ev3.RMIRegulatedMotor;

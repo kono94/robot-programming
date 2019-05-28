@@ -1,4 +1,4 @@
-package de.scr.components;
+package de.scr.ev3.components;
 
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 

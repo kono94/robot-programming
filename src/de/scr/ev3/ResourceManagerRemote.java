@@ -1,8 +1,9 @@
-package de.scr.lib;
+package de.scr.ev3;
 
-import de.scr.components.Drivable;
-import de.scr.components.DriveRemote;
-import de.scr.components.MyGyroSensor;
+import de.scr.Controller;
+import de.scr.ev3.components.Drivable;
+import de.scr.ev3.components.DriveRemote;
+import de.scr.ev3.components.MyGyroSensor;
 import lejos.hardware.port.Port;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RemoteEV3;
@@ -18,7 +19,7 @@ public class ResourceManagerRemote extends ResourceManagerLocal {
     private RemoteEV3 ev3;
     private List<RMIRegulatedMotor> regulatedMotors;
 
-    ResourceManagerRemote(RemoteEV3 ev3) {
+    public ResourceManagerRemote(RemoteEV3 ev3) {
         logger.info("Creating ResourceManagerRemote");
         this.ev3 = ev3;
         regulatedMotors = new ArrayList<>();

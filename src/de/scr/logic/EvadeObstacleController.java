@@ -1,8 +1,8 @@
-package de.scr.utils;
+package de.scr.logic;
 
-import de.scr.components.MyDistanceSensor;
-import de.scr.components.MyGyroSensor;
-import de.scr.lib.Controller;
+import de.scr.Controller;
+import de.scr.ev3.components.MyDistanceSensor;
+import de.scr.ev3.components.MyGyroSensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

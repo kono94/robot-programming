@@ -1,4 +1,4 @@
-package de.scr.utils;
+package de.scr.logic.adjuster;
 
 public class DifferentialManager {
     private float previousError = 0;

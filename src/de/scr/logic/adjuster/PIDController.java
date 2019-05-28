@@ -1,4 +1,4 @@
-package de.scr.utils;
+package de.scr.logic.adjuster;
 
 public class PIDController implements Adjuster{
     private float Kp = 65f;

@@ -1,9 +1,11 @@
-package de.scr.utils;
+package de.scr.logic;
 
-import de.scr.components.Drivable;
-import de.scr.components.MyDistanceSensor;
+import de.scr.Controller;
 import de.scr.config.Constants;
-import de.scr.lib.Controller;
+import de.scr.ev3.components.Drivable;
+import de.scr.ev3.components.MyDistanceSensor;
+import de.scr.logic.adjuster.Adjuster;
+import de.scr.logic.adjuster.SimplePID;
 
 public class SpaceKeeperController {
     private MyDistanceSensor distanceSensor;

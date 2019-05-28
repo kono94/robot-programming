@@ -1,4 +1,4 @@
-package de.scr.utils;
+package de.scr.logic.adjuster;
 
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;

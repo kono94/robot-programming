@@ -1,10 +1,13 @@
-package de.scr.utils;
+package de.scr.logic;
 
-import de.scr.components.Drivable;
-import de.scr.components.MyColorSensor;
+import de.scr.Controller;
+import de.scr.ev3.components.Drivable;
+import de.scr.ev3.components.MyColorSensor;
+import de.scr.logic.adjuster.Adjuster;
+import de.scr.logic.adjuster.PIDController;
+import de.scr.utils.Normalizer;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
-import de.scr.lib.Controller;
 
 public class FollowLineController {
 

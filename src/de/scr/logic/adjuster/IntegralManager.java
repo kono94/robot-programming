@@ -1,4 +1,6 @@
-package de.scr.utils;
+package de.scr.logic.adjuster;
+
+import de.scr.utils.Normalizer;
 
 public class IntegralManager{
     private final int sampleRange = 15;
