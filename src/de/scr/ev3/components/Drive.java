@@ -85,7 +85,12 @@ public class Drive implements Drivable{
 
     @Override
     public void rotateOnPlace(int speed, int degree) {
+        //TODO: implement
+    }
 
+    @Override
+    public void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor) {
+        //TODO: implement
     }
 
     public int getSpeed() {
