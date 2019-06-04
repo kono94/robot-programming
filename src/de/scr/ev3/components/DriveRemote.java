@@ -101,11 +101,20 @@ public class DriveRemote implements Drivable {
         try {
             right.stop(true);
             left.stop(true);
-            right.setSpeed(speed);
-            left.setSpeed(speed);
-            right.forward();
-            left.backward();
-            Delay.msDelay((772000 / speed * degree) / 360);
+
+            if(degree > 0) { // rotate left
+                right.setSpeed(speed);
+                left.setSpeed(speed);
+                right.forward();
+                left.backward();
+                Delay.msDelay((772000 / speed * degree) / 360);
+            } else { // rotate right
+                right.setSpeed(speed);
+                left.setSpeed(speed);
+                right.backward();
+                left.forward();
+                Delay.msDelay((772000 / speed * -degree) / 360);
+            }
             left.stop(true);
             right.stop(true);
         } catch (RemoteException e) {
