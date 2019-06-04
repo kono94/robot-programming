@@ -1,6 +1,7 @@
 package de.scr;
 
 import de.scr.config.Constants;
+import de.scr.config.RunControl;
 import de.scr.ev3.ResourceManager;
 import de.scr.ev3.ResourceManagerLocal;
 import de.scr.ev3.ResourceManagerRemote;
@@ -11,6 +12,7 @@ import de.scr.ev3.components.MyGyroSensor;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
 import de.scr.logic.SpaceKeeperController;
+import de.scr.utils.TwoColors;
 import lejos.hardware.Battery;
 import lejos.hardware.Button;
 import lejos.remote.ev3.RemoteEV3;
@@ -24,7 +26,7 @@ import java.rmi.RemoteException;
 public class Controller {
     private static Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    public static volatile boolean RUN = false;
+    public static volatile RunControl RUN = RunControl.STOP;
     private ResourceManager resourceManager;
     private FollowLineController followLineController;
     private SpaceKeeperController spaceKeeperController;
@@ -34,6 +36,8 @@ public class Controller {
     private MyDistanceSensor primaryDistanceSensor;
     private MyColorSensor secondaryColorSensor;
     private MyGyroSensor gyroSensor;
+    private TwoColors darkColor;
+    private TwoColors lightColor;
 
     // when true => is running locally on the robot,
     // when false => using RMI
@@ -47,12 +51,12 @@ public class Controller {
 
     private void init() {
         logger.info("Init Controller");
-        Controller.RUN = true;
+        Controller.RUN = RunControl.FOLLOW_EVADE;
         initResourceManager();
         createEv3Components();
 
-//        holdDistance();
-//        followLine();
+        followLine();
+        holdDistance();
         evadeObstacle();
         registerShutdownOnClick();
     }
@@ -85,7 +89,7 @@ public class Controller {
 
     private void followLine() {
         logger.info("Start followLine Mode");
-        followLineController = new FollowLineController(drivable, primaryColorSensor, secondaryColorSensor);
+        followLineController = new FollowLineController(this, drivable, primaryColorSensor, secondaryColorSensor);
         followLineController.init();
         followLineController.start();
     }
@@ -99,7 +103,7 @@ public class Controller {
 
     private void evadeObstacle() {
         logger.info("Start evadeObstacle Mode");
-        evadeObstacleController = new EvadeObstacleController(gyroSensor, primaryDistanceSensor);
+        evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor, primaryColorSensor);
         evadeObstacleController.init();
         evadeObstacleController.start();
     }
@@ -107,8 +111,24 @@ public class Controller {
     private void registerShutdownOnClick() {
         new Thread(() -> {
             Button.UP.waitForPressAndRelease();
-            Controller.RUN = false;
+            Controller.RUN = RunControl.STOP;
             logger.info("battery: " + Battery.getVoltage());
         }).start();
+    }
+
+    public TwoColors getDarkColor() {
+        return darkColor;
+    }
+
+    public TwoColors getLightColor() {
+        return lightColor;
+    }
+
+    public void setDarkColor(TwoColors darkColor) {
+        this.darkColor = darkColor;
+    }
+
+    public void setLightColor(TwoColors lightColor) {
+        this.lightColor = lightColor;
     }
 }
