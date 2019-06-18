@@ -70,9 +70,9 @@ public class FollowLineController {
             while (Controller.RUN) {
                 int turn;
                 if (drivable.getSpeed() > 0) {
-                    turn = lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
+                    turn = -lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
                 } else {
-                    turn = -lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
+                    turn = lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
                 }
                 drivable.drive(turn);
             }

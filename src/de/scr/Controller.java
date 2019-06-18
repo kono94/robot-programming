@@ -11,6 +11,7 @@ import de.scr.ev3.components.MyGyroSensor;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
 import de.scr.logic.SpaceKeeperController;
+import de.scr.ui.MainFrame;
 import lejos.hardware.Battery;
 import lejos.hardware.Button;
 import lejos.remote.ev3.RemoteEV3;
@@ -51,9 +52,10 @@ public class Controller {
         initResourceManager();
         createEv3Components();
 
-//        holdDistance();
-//        followLine();
-        evadeObstacle();
+//       holdDistance();
+//       followLine();
+//       evadeObstacle();
+        new MainFrame(drivable);
         registerShutdownOnClick();
     }
 
