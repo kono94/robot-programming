@@ -17,7 +17,7 @@ public class Drive implements Drivable{
     public void drive(int speed, int turn){
         this.speed = speed;
         int maxSpeed = (int) right.getMaxSpeed();
-        int customSpeed = (maxSpeed * speed)/100;
+        int customSpeed = (maxSpeed * speed) / 100;
             /*
                  300  turn 0 = left 300 right 300
                  300  turn 50 = left 150 right 300
@@ -50,8 +50,8 @@ public class Drive implements Drivable{
                 right.forward();
                 left.forward();
             } else {
-                left.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
-                right.setSpeed(customSpeed);
+                left.setSpeed(customSpeed);
+                right.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
                 right.backward();
                 left.backward();
             }
@@ -67,8 +67,8 @@ public class Drive implements Drivable{
                 right.forward();
                 left.forward();
             } else {
-                right.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
-                left.setSpeed(customSpeed);
+                right.setSpeed(customSpeed);
+                left.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
                 right.backward();
                 left.backward();
             }

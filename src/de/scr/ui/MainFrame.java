@@ -4,6 +4,7 @@ import de.scr.ev3.components.Drivable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,65 +20,43 @@ public class MainFrame extends JFrame {
         add(driveControlPanel, BorderLayout.CENTER);
         setFocusable(true);
         setFocusableWindowState(true);
+
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(e -> {
-            synchronized (this) {
-                if (e.getID() == KeyEvent.KEY_PRESSED) {
-                    System.out.println("add " + e.getKeyCode());
-                    pressed.add(e.getKeyCode());
-                } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-                    System.out.println("remove " + e.getKeyCode());
-                    pressed.remove(e.getKeyCode());
-                }
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+                pressed.add(e.getKeyCode());
+            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
+                pressed.remove(e.getKeyCode());
             }
             return false;
         });
-        new Thread(() -> {
-            while (true) {
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
                 JSlider dirSlider = driveControlPanel.getDirectionSlider();
                 JSlider speedSlider = driveControlPanel.getSpeedSlider();
-                boolean resetDir = true;
-                boolean resetSpeed = true;
-                synchronized (this) {
-                    System.out.println(pressed);
-                    for (int a : pressed) {
-                        switch (a) {
-                            case KeyEvent.VK_W:
-                            case KeyEvent.VK_UP:
-                                adjustSlider(speedSlider, 5);
-                                resetSpeed = false;
-                                break;
-                            case KeyEvent.VK_S:
-                            case KeyEvent.VK_DOWN:
-                                adjustSlider(speedSlider, -5);
-                                resetSpeed = false;
-                                break;
-                            case KeyEvent.VK_D:
-                            case KeyEvent.VK_RIGHT:
-                                adjustSlider(dirSlider, 8);
-                                resetDir = false;
-                                break;
-                            case KeyEvent.VK_A:
-                            case KeyEvent.VK_LEFT:
-                                resetDir = false;
-                                adjustSlider(dirSlider, -8);
-                                break;
-                        }
-                    }
-                    /*
-                    if(resetDir)
-                        resetSlider(dirSlider, 8);
-                    if(resetSpeed)
-                        resetSlider(speedSlider, 3);
-                      */
-                }
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_D:
+                        adjustSlider(dirSlider, 10);
+                        break;
+                    case KeyEvent.VK_A:
+                        adjustSlider(dirSlider, -10);
+                        break;
+                    case KeyEvent.VK_W:
+                        adjustSlider(speedSlider, 5);
+                        break;
+                    case KeyEvent.VK_S:
+                        adjustSlider(speedSlider, -5);
+                        break;
+                    case KeyEvent.VK_Q:
+                        dirSlider.setValue(0);
+                        speedSlider.setValue(0);
                 }
             }
-        }).start();
+        });
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         setVisible(true);

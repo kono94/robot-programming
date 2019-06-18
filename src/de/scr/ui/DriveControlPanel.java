@@ -14,7 +14,8 @@ public class DriveControlPanel extends JPanel {
         setPreferredSize(new Dimension(300, 200));
         speedSlider = new JSlider(JSlider.VERTICAL, -100, 100, 0);
         directionSlider = new JSlider(JSlider.HORIZONTAL, -100, 100, 0);
-
+        speedSlider.setEnabled(false);
+        directionSlider.setEnabled(false);
         directionSlider.addChangeListener(e -> drivable.drive(directionSlider.getValue()));
         speedSlider.addChangeListener(e -> drivable.drive(speedSlider.getValue(), directionSlider.getValue()));
         add(directionSlider);
