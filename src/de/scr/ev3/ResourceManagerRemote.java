@@ -14,7 +14,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceManagerRemote extends ResourceManagerLocal {
+public class ResourceManagerRemote extends ResourceManager {
     private static Logger logger = LoggerFactory.getLogger(ResourceManagerRemote.class);
     private RemoteEV3 ev3;
     private List<RMIRegulatedMotor> regulatedMotors;
@@ -71,9 +71,5 @@ public class ResourceManagerRemote extends ResourceManagerLocal {
 
     public List<RMIRegulatedMotor> getRegulatedMotors() {
         return regulatedMotors;
-    }
-
-    public List<Closeable> getSensors() {
-        return sensors;
     }
 }
