@@ -1,5 +1,6 @@
 package de.scr.ev3;
 
+import de.scr.Controller;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.Drive;
 import de.scr.ev3.components.MyGyroSensor;
@@ -7,8 +8,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 
 public class ResourceManagerLocal extends ResourceManager {
-    public ResourceManagerLocal(){
-        super();
+    public ResourceManagerLocal(Controller controller) {
+        super(controller);
         logger.info("Create Local ResourceManager");
     }
 

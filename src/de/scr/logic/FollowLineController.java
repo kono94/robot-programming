@@ -1,6 +1,7 @@
 package de.scr.logic;
 
 import de.scr.Controller;
+import de.scr.config.Constants;
 import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyColorSensor;
@@ -74,27 +75,46 @@ public class FollowLineController {
     public void start(Object lock) {
         System.out.println("Starting follow line mechanic");
         new Thread(() -> {
-            while (Controller.RUN != RunControl.STOP) {
-                if (RunControl.isFollowMode(Controller.RUN)) {
-                    int turn;
-                    if (drivable.getSpeed() > 0) {
-                        turn = -lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
-                    } else {
-                        turn = lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
-                    }
-                    drivable.drive(turn);
-                } else {
-                    try {
-                        synchronized (lock) {
-                            lock.wait();
+            while (controller.RUN != RunControl.STOP) {
+                switch (controller.RUN) {
+                    case LINE:
+                    case LINE_EVADE:
+                    case LINE_CONVOY:
+                        int turn;
+                        if (drivable.getSpeed() > 0) {
+                            turn = -lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
+                        } else {
+                            turn = lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                        drivable.drive(turn);
+                        break;
+                    case LINEDETECT:
+                        detectLine(RunControl.LINE);
+                        break;
+                    case LINEDETECT_EVADING:
+                        detectLine(RunControl.LINE_EVADE);
+                        break;
+                    default:
+                        System.out.println("FollowLine -> SLEEEEEEEP");
+                        try {
+                            synchronized (lock) {
+                                lock.wait();
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                 }
-
             }
         }).start();
+    }
+
+    private void detectLine(RunControl controlOnLine) {
+        float f = normalizer.normalizeValue(colorSensor.getCurrentRedValue());
+        if (f < 0.2f) {
+            System.out.println("FOUND LINE - CURRENT VALUE:" + f);
+            drivable.setSpeed(Constants.DEFAULT_SPEED);
+            controller.changeRunControl(controlOnLine);
+        }
     }
 }
 

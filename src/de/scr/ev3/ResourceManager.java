@@ -1,5 +1,6 @@
 package de.scr.ev3;
 
+import de.scr.Controller;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyGyroSensor;
 import lejos.hardware.port.Port;
@@ -16,9 +17,11 @@ import java.util.List;
 public abstract class ResourceManager {
     List<Closeable> sensors;
     Logger logger = LoggerFactory.getLogger(getClass());
+    Controller controller;
 
-    ResourceManager() {
+    ResourceManager(Controller controller) {
         sensors = new ArrayList<>();
+        this.controller = controller;
     }
 
     public abstract Drivable createDrivable(Port motorA, Port motorB);

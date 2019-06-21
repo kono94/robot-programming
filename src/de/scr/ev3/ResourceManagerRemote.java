@@ -20,7 +20,8 @@ public class ResourceManagerRemote extends ResourceManager {
     private RemoteEV3 ev3;
     private List<RMIRegulatedMotor> regulatedMotors;
 
-    public ResourceManagerRemote(RemoteEV3 ev3) {
+    public ResourceManagerRemote(Controller controller, RemoteEV3 ev3) {
+        super(controller);
         logger.info("Creating ResourceManagerRemote");
         this.ev3 = ev3;
         regulatedMotors = new ArrayList<>();
@@ -52,7 +53,7 @@ public class ResourceManagerRemote extends ResourceManager {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Thread size: {}", Thread.getAllStackTraces().size());
             logger.info("Shutdown: Starting Shutdown-Hook");
-            Controller.RUN = RunControl.STOP;
+            controller.RUN = RunControl.STOP;
             try {
                 Thread.sleep(1000);
                 for (RMIRegulatedMotor regulatedMotor : regulatedMotors) {

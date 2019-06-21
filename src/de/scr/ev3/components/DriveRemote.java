@@ -17,17 +17,19 @@ public class DriveRemote implements Drivable {
         this.speed = Constants.DEFAULT_SPEED;
     }
 
+    private int getPercentSpeed(int percent) throws RemoteException {
+        return ((int) right.getMaxSpeed() * percent) / 100;
+    }
+
     /**
-     *
      * @param speed from -100 to 100 in percent of max speed, negative equals backwards
-     * @param turn from -100 to 100 relation between left (-) and right (+) wheel; 100 only the right wheel is
-     *             rotation in speed %; 0 equals straight forward
+     * @param turn  from -100 to 100 relation between left (-) and right (+) wheel; 100 only the right wheel is
+     *              rotation in speed %; 0 equals straight forward
      */
     public void drive(int speed, int turn) {
         try {
             this.speed = speed;
-            int maxSpeed = (int) right.getMaxSpeed();
-            int customSpeed = (maxSpeed * speed) / 100;
+            int percentSpeed = getPercentSpeed(speed);
             /*
                  300  turn 0 = left 300 right 300
                  300  turn 50 = left 150 right 300
@@ -55,49 +57,49 @@ public class DriveRemote implements Drivable {
              */
             if (turn >= 0 && turn < 80) {
                 if (speed > 0) {
-                    right.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
-                    left.setSpeed(customSpeed);
+                    right.setSpeed((int) (percentSpeed * ((100 - turn) / (double) 100)));
+                    left.setSpeed(percentSpeed);
                     right.forward();
                     left.forward();
                 } else {
-                    left.setSpeed(customSpeed);
-                    right.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
+                    left.setSpeed(percentSpeed);
+                    right.setSpeed((int) (percentSpeed * ((100 - turn) / (double) 100)));
                     right.backward();
                     left.backward();
                 }
             } else if (turn > 80) {
                 if (speed > 0) {
-                    right.setSpeed((int) (customSpeed * ((turn) / (double) 100)));
-                    left.setSpeed(customSpeed);
+                    right.setSpeed((int) (percentSpeed * ((turn) / (double) 100)));
+                    left.setSpeed(percentSpeed);
                     right.backward();
                     left.forward();
                 } else {
-                    right.setSpeed((int) (customSpeed * ((turn) / (double) 100)));
-                    left.setSpeed(customSpeed);
+                    right.setSpeed((int) (percentSpeed * ((turn) / (double) 100)));
+                    left.setSpeed(percentSpeed);
                     right.forward();
                     left.backward();
                 }
             } else if (turn > -80) {
                 if (speed > 0) {
-                    left.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
-                    right.setSpeed(customSpeed);
+                    left.setSpeed((int) (percentSpeed * (100 - (-turn)) / (double) 100));
+                    right.setSpeed(percentSpeed);
                     right.forward();
                     left.forward();
                 } else {
-                    right.setSpeed(customSpeed);
-                    left.setSpeed((int) (customSpeed * (100 - (-turn)) / (double) 100));
+                    right.setSpeed(percentSpeed);
+                    left.setSpeed((int) (percentSpeed * (100 - (-turn)) / (double) 100));
                     right.backward();
                     left.backward();
                 }
-            }else{
+            } else {
                 if (speed > 0) {
-                    left.setSpeed((int) (customSpeed * (-turn) / (double) 100));
-                    right.setSpeed(customSpeed);
+                    left.setSpeed((int) (percentSpeed * (-turn) / (double) 100));
+                    right.setSpeed(percentSpeed);
                     left.backward();
                     right.forward();
                 } else {
-                    left.setSpeed((int) (customSpeed * (-turn) / (double) 100));
-                    right.setSpeed(customSpeed);
+                    left.setSpeed((int) (percentSpeed * (-turn) / (double) 100));
+                    right.setSpeed(percentSpeed);
                     left.forward();
                     right.backward();
                 }
@@ -108,7 +110,7 @@ public class DriveRemote implements Drivable {
         }
     }
 
-    public void drive(int turn){
+    public void drive(int turn) {
         this.drive(speed, turn);
     }
 
@@ -118,7 +120,7 @@ public class DriveRemote implements Drivable {
             right.stop(true);
             left.stop(true);
 
-            if(degree > 0) { // rotate left
+            if (degree > 0) { // rotate left
                 right.setSpeed(speed);
                 left.setSpeed(speed);
                 right.forward();
@@ -138,28 +140,37 @@ public class DriveRemote implements Drivable {
         }
     }
 
-    public void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor) {
+    public void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor, boolean oneWheelOnly) {
         try {
+            int percentSpeed = getPercentSpeed(speed);
             right.stop(true);
             left.stop(true);
             float startAngle = gyroSensor.getAngle();
             float currentAngle = startAngle;
 
-            if(degree > 0) { // rotate left
-                right.setSpeed(speed);
-                left.setSpeed(speed);
-                right.forward();
+            if (degree > 0) { // rotate left
+                right.setSpeed(percentSpeed);
+                left.setSpeed(percentSpeed);
+                if (oneWheelOnly)
+                    right.stop(true);
+                else
+                    right.forward();
+
                 left.backward();
-                while(currentAngle < (startAngle + degree % 360)) {
+                while (currentAngle < (startAngle + degree % 360)) {
                     Delay.msDelay(50);
                     currentAngle = gyroSensor.getAngle();
                 }
             } else { // rotate right
-                right.setSpeed(speed);
-                left.setSpeed(speed);
+                right.setSpeed(percentSpeed);
+                left.setSpeed(percentSpeed);
                 right.backward();
-                left.forward();
-                while(currentAngle > (startAngle + degree % 360)) {
+                if (oneWheelOnly)
+                    left.stop(true);
+                else
+                    left.forward();
+
+                while (currentAngle > (startAngle + degree % 360)) {
                     Delay.msDelay(50);
                     currentAngle = gyroSensor.getAngle();
                 }

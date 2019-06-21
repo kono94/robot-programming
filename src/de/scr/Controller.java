@@ -9,9 +9,9 @@ import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyColorSensor;
 import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.ev3.components.MyGyroSensor;
+import de.scr.logic.ConvoyController;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
-import de.scr.logic.HoldDistanceController;
 import de.scr.ui.MainFrame;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Battery;
@@ -27,11 +27,11 @@ import java.rmi.RemoteException;
 public class Controller {
     private static Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    public static volatile RunControl RUN = RunControl.STOP;
+    public volatile RunControl RUN = RunControl.STOP;
     private final Object lock = new Object();
     private ResourceManager resourceManager;
     private FollowLineController followLineController;
-    private HoldDistanceController spaceKeeperController;
+    private ConvoyController spaceKeeperController;
     private EvadeObstacleController evadeObstacleController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
@@ -51,9 +51,16 @@ public class Controller {
         init();
     }
 
+    public void changeRunControl(RunControl c) {
+        this.RUN = c;
+        synchronized (lock) {
+            lock.notifyAll();
+        }
+    }
+
     private void init() {
         logger.info("Init Controller");
-        Controller.RUN = RunControl.FOLLOW_EVADE;
+        RUN = RunControl.LINE_EVADE;
         initResourceManager();
         createEv3Components();
 //        registerShutdownOnClick();
@@ -64,22 +71,16 @@ public class Controller {
     //TODO: Implement kill-switch
     private void modiSwitcher() {
         switch (RUN) {
-            case FOLLOW_EVADE:
+            case LINE_EVADE:
                 followLine();
                 evadeObstacle();
                 break;
-            case FOLLOW_HOLD:
+            case LINE_CONVOY:
                 followLine();
                 holdDistance();
                 break;
-            case EVADE_OBSTACLE:
-                evadeObstacle();
-                break;
-            case FOLLOW_LINE:
+            case LINE:
                 followLine();
-                break;
-            case HOLD_DISTANCE:
-                holdDistance();
                 break;
             case GUI_MODE:
                 new MainFrame(drivable);
@@ -90,7 +91,7 @@ public class Controller {
     private void initResourceManager() {
         if (isRunningOnDevice) {
             logger.info("Connecting local");
-            resourceManager = new ResourceManagerLocal();
+            resourceManager = new ResourceManagerLocal(this);
         } else {
             logger.info("Connecting with RMI");
             RemoteEV3 ev3;
@@ -101,7 +102,7 @@ public class Controller {
                 e.printStackTrace();
                 throw new RuntimeException("Could not setup RemoteEV3");
             }
-            resourceManager = new ResourceManagerRemote(ev3);
+            resourceManager = new ResourceManagerRemote(this, ev3);
         }
     }
 
@@ -122,7 +123,7 @@ public class Controller {
 
     private void holdDistance() {
         logger.info("Start holdDistance Mode");
-        spaceKeeperController = new HoldDistanceController(drivable, primaryDistanceSensor);
+        spaceKeeperController = new ConvoyController(this, drivable, primaryDistanceSensor);
         spaceKeeperController.init();
         spaceKeeperController.start(lock);
     }
@@ -137,7 +138,7 @@ public class Controller {
     private void registerShutdownOnClick() {
         new Thread(() -> {
             Button.UP.waitForPressAndRelease();
-            Controller.RUN = RunControl.STOP;
+            RUN = RunControl.STOP;
             logger.info("battery: " + Battery.getVoltage());
         }).start();
     }
