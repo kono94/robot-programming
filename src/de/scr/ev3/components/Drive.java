@@ -100,7 +100,7 @@ public class Drive implements Drivable{
     }
 
     @Override
-    public void rotateOnPlace(int speed, int degree) {
+    public void rotateOnPlaceOld(int speed, int degree) {
         //TODO: implement
     }
 

@@ -5,14 +5,13 @@ import de.scr.config.Constants;
 import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyDistanceSensor;
-import de.scr.logic.adjuster.Adjuster;
 import de.scr.logic.adjuster.SimplePID;
 import lejos.utility.Delay;
 
 public class ConvoyController {
     private MyDistanceSensor distanceSensor;
     private Drivable drivable;
-    private Adjuster distanceAdjuster;
+    private SimplePID distanceAdjuster;
     private Controller controller;
 
     public ConvoyController(Controller controller, Drivable drivable, MyDistanceSensor distanceSensor) {
@@ -23,6 +22,7 @@ public class ConvoyController {
 
     public void init() {
         distanceAdjuster = new SimplePID(0.25f, 800, 0, 0);
+//        distanceAdjuster.setMaxAdjustment(50); //TODO: TEST THIS
     }
 
     public void start(Object lock) {
@@ -31,7 +31,10 @@ public class ConvoyController {
             while (controller.RUN != RunControl.STOP) {
                 switch (controller.RUN) {
                     case LINE_CONVOY:
+
+
                         float distanceValue = distanceSensor.getCurrentDistance();
+                        System.out.printf("Distance Value: %f", distanceValue);
 
                         if (Float.isFinite(distanceValue)) {
                             int speed = distanceAdjuster.calculateAdjustment(distanceValue);

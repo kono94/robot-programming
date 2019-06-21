@@ -115,7 +115,7 @@ public class DriveRemote implements Drivable {
     }
 
 
-    public void rotateOnPlace(int speed, int degree) {
+    public void rotateOnPlaceOld(int speed, int degree) {
         try {
             right.stop(true);
             left.stop(true);

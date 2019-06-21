@@ -30,6 +30,22 @@ public class SimplePID implements Adjuster{
         this.differentialManager = new DifferentialManager();
     }
 
+    public int getMinAdjustment() {
+        return minAdjustment;
+    }
+
+    public void setMinAdjustment(int minAdjustment) {
+        this.minAdjustment = minAdjustment;
+    }
+
+    public int getMaxAdjustment() {
+        return maxAdjustment;
+    }
+
+    public void setMaxAdjustment(int maxAdjustment) {
+        this.maxAdjustment = maxAdjustment;
+    }
+
     @Override
     public int calculateAdjustment(float normSensorValue){
         System.out.println(normSensorValue);
