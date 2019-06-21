@@ -8,6 +8,7 @@ public enum RunControl {
     EVADE_OBSTACLE,
     FOLLOW_HOLD,
     FOLLOW_EVADE,
+    GUI_MODE
     ;
 
 
