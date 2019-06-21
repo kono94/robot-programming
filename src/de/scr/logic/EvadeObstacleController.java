@@ -1,11 +1,11 @@
 package de.scr.logic;
 
 import de.scr.Controller;
-import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyColorSensor;
 import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.ev3.components.MyGyroSensor;
+import de.scr.utils.RunControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,27 +37,25 @@ public class EvadeObstacleController {
                 switch (controller.RUN) {
                     case LINE_EVADE:
                     case LINEDETECT_EVADING:
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        sleepFor(100); //TODO: DO WE REALY NEED THIS?
 
+                        //If Obstacle gets to close, start evade script
                         if (distanceSensor.getCurrentDistance() < EVADE_THRESH_HOLD) {
                             controller.changeRunControl(RunControl.EVADING);
                         }
-
                         break;
                     case EVADING:
-                        // turn right and drive
+                        logger.debug("Start Rotating");
                         drivable.rotateOnPlace(25, -90, gyroSensor, false);
-                        System.out.println("DONE WITH ROTATING");
+                        logger.debug("Done with Rotating");
 
+                        logger.debug("Start driving a circle");
                         drivable.drive(drivable.getSpeed() + 10, -40);
 
                         controller.changeRunControl(RunControl.LINEDETECT_EVADING);
                         break;
                     default:
+                        logger.debug("This thread waits...");
                         try {
                             synchronized (lock) {
                                 lock.wait();
@@ -68,5 +66,13 @@ public class EvadeObstacleController {
                 }
             }
         }).start();
+    }
+
+    private void sleepFor(int sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

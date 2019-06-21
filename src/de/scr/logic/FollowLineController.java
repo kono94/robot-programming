@@ -2,17 +2,19 @@ package de.scr.logic;
 
 import de.scr.Controller;
 import de.scr.config.Constants;
-import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyColorSensor;
 import de.scr.logic.adjuster.Adjuster;
 import de.scr.logic.adjuster.PIDController;
 import de.scr.utils.Normalizer;
+import de.scr.utils.RunControl;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Button;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FollowLineController {
-
+    private static Logger logger = LoggerFactory.getLogger(FollowLineController.class);
     private Normalizer normalizer;
     private Normalizer secondaryNormalizer;
     private Drivable drivable;
@@ -31,19 +33,14 @@ public class FollowLineController {
 
     public void init() {
         /*
-        colorSensor.switchToRedMode();
+        colorSensor.switchToRedMode(); //TODO:
         secondaryColorSensor.switchToRedMode();
         */
-        TwoColors darkColor;
-        TwoColors lightColor;
 
-        System.out.println("Measuring dark color... waiting for click");
-        darkColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor);
-        System.out.println("darkColor: " + darkColor.primary + " " + darkColor.secondary);
-
-        System.out.println("Measuring light color... waiting for click");
-        lightColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor);
-        System.out.println("lightColor: " + lightColor.primary + " " + lightColor.secondary);
+        TwoColors darkColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "dark");
+        TwoColors lightColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "light");
+        controller.setDarkColor(darkColor);
+        controller.setLightColor(lightColor);
 
         /*
 
@@ -52,28 +49,33 @@ public class FollowLineController {
         */
         normalizer = new Normalizer(darkColor.primary, lightColor.primary, -1, 1);
         secondaryNormalizer = new Normalizer(darkColor.secondary, lightColor.secondary, -1, 1);
+
+        lineAdjuster = buildPidController();
+
+        //lineAdjuster = new SimplePID(0, 80, 50, 40);
+        //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
+    }
+
+    private TwoColors measureCurrentColorOnClick(MyColorSensor primary, MyColorSensor secondary, String color) {
+        System.out.printf("Measuring %s color... waiting for click\n", color);
+        Button.DOWN.waitForPressAndRelease();
+        TwoColors twoColors = new TwoColors(primary.getCurrentRedValue(), secondary.getCurrentRedValue());
+        System.out.println("lightColor: Primary:" + twoColors.primary + " Secondary:" + twoColors.secondary);
+        return twoColors;
+    }
+
+    private PIDController buildPidController() {
         PIDController pid = new PIDController(0);
         pid.setKp(65f);
         pid.setKi(0.1f);
         pid.setKd(8000);
         pid.setMaxIntegral(50);
         pid.setMinIntegral(-50);
-
-        lineAdjuster = pid;
-
-        //lineAdjuster = new SimplePID(0, 80, 50, 40);
-        //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
-        controller.setDarkColor(darkColor);
-        controller.setLightColor(lightColor);
-    }
-
-    private TwoColors measureCurrentColorOnClick(MyColorSensor primary, MyColorSensor secondary) {
-        Button.DOWN.waitForPressAndRelease();
-        return new TwoColors(primary.getCurrentRedValue(), secondary.getCurrentRedValue());
+        return pid;
     }
 
     public void start(Object lock) {
-        System.out.println("Starting follow line mechanic");
+        logger.info("Starting follow line mechanic");
         new Thread(() -> {
             while (controller.RUN != RunControl.STOP) {
                 switch (controller.RUN) {
@@ -95,7 +97,7 @@ public class FollowLineController {
                         detectLine(RunControl.LINE_EVADE);
                         break;
                     default:
-                        System.out.println("FollowLine -> SLEEEEEEEP");
+                        logger.debug("This thread waits...");
                         try {
                             synchronized (lock) {
                                 lock.wait();
@@ -111,7 +113,7 @@ public class FollowLineController {
     private void detectLine(RunControl controlOnLine) {
         float f = normalizer.normalizeValue(colorSensor.getCurrentRedValue());
         if (f < 0.2f) {
-            System.out.println("FOUND LINE - CURRENT VALUE:" + f);
+            logger.info("FOUND LINE - CURRENT VALUE: {}", f);
             drivable.drive(0, 0);
             drivable.setSpeed(Constants.DEFAULT_SPEED);
             controller.changeRunControl(controlOnLine);

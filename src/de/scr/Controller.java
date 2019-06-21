@@ -1,7 +1,6 @@
 package de.scr;
 
 import de.scr.config.Constants;
-import de.scr.config.RunControl;
 import de.scr.ev3.ResourceManager;
 import de.scr.ev3.ResourceManagerLocal;
 import de.scr.ev3.ResourceManagerRemote;
@@ -13,6 +12,7 @@ import de.scr.logic.ConvoyController;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
 import de.scr.ui.MainFrame;
+import de.scr.utils.RunControl;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Battery;
 import lejos.hardware.Button;
@@ -63,7 +63,7 @@ public class Controller {
         RUN = RunControl.LINE_CONVOY;
         initResourceManager();
         createEv3Components();
-//        registerShutdownOnClick();
+//        registerShutdownOnClick(); //TODO: Test this (should work, but maybe do this in main thread?)
 
         modiSwitcher();
     }

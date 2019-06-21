@@ -2,13 +2,16 @@ package de.scr.logic;
 
 import de.scr.Controller;
 import de.scr.config.Constants;
-import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.logic.adjuster.SimplePID;
+import de.scr.utils.RunControl;
 import lejos.utility.Delay;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConvoyController {
+    private static Logger logger = LoggerFactory.getLogger(ConvoyController.class);
     private MyDistanceSensor distanceSensor;
     private Drivable drivable;
     private SimplePID distanceAdjuster;
@@ -26,7 +29,7 @@ public class ConvoyController {
     }
 
     public void start(Object lock) {
-        System.out.println("Starting follow space keeper mechanic");
+        logger.info("Starting follow space keeper mechanic");
         new Thread(() -> {
             while (controller.RUN != RunControl.STOP) {
                 switch (controller.RUN) {
@@ -34,16 +37,17 @@ public class ConvoyController {
 
 
                         float distanceValue = distanceSensor.getCurrentDistance();
-                        System.out.printf("Distance Value: %f", distanceValue);
+                        logger.debug("Distance Value: {}", distanceValue);
 
                         if (Float.isFinite(distanceValue)) {
                             int speed = distanceAdjuster.calculateAdjustment(distanceValue);
-                            System.out.println("SPEED: " + speed);
+                            logger.debug("SPEED: {}", speed);
                             drivable.setSpeed((speed * Constants.DEFAULT_SPEED) / 100);
                             Delay.msDelay(500);
                         }
                         break;
                     default:
+                        logger.debug("This thread waits...");
                         try {
                             synchronized (lock) {
                                 lock.wait();
