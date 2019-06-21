@@ -11,8 +11,6 @@ import lejos.utility.Delay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class EvadeObstacleController {
     private static Logger logger = LoggerFactory.getLogger(EvadeObstacleController.class);
     private Drivable drivable;
@@ -33,13 +31,20 @@ public class EvadeObstacleController {
         logger.info("init evading");
     }
 
-    public void start() {
+    public void start(Object lock) {
         logger.info("start evading");
         new Thread(() -> {
             while (Controller.RUN != RunControl.STOP) {
-                if(Controller.RUN == RunControl.EVADE_OBSTACLE || Controller.RUN == RunControl.FOLLOW_EVADE) {
+                if (RunControl.isEvadeMode(Controller.RUN)) {
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     float distanceValue = distanceSensor.getCurrentDistance();
-                    if(distanceValue < 0.1) {
+                    if (distanceValue < 0.07) {
                         RunControl previousMode = Controller.RUN;
                         Controller.RUN = RunControl.EVADE_OBSTACLE;
                         int previousSpeed = drivable.getSpeed();
@@ -70,20 +75,34 @@ public class EvadeObstacleController {
                         angleAfterTurn = gyroSensor.getAngle();
                         logger.debug("Before {}, After {}, Diff {}", angleBeforeTurn, angleAfterTurn, angleBeforeTurn - angleAfterTurn);
 
-                        drivable.drive(20, 0);
+                        drivable.drive(10, 0);
 
                         // drive forward for 100ms if no line is found
                         TwoColors darkColor = controller.getDarkColor();
-                        while(colorSensor.getCurrentRedValue() >= darkColor.primary) {
-                            logger.debug("line not found, sleeping 100ms while driving");
-                            Delay.msDelay(100);
+                        logger.debug("Trying to find line");
+                        while (colorSensor.getCurrentRedValue() >= darkColor.primary) {
+
                         }
+
+                        drivable.drive(0, 0);
 
                         logger.debug("line found, returning with previous speed {} in mode {}", previousSpeed, previousMode);
 
                         // continue with previous mode
-                        drivable.setSpeed(previousSpeed);
                         Controller.RUN = previousMode;
+                        drivable.setSpeed(previousSpeed);
+
+                        synchronized (lock) {
+                            lock.notifyAll();
+                        }
+                    }
+                } else {
+                    try {
+                        synchronized (lock) {
+                            lock.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }

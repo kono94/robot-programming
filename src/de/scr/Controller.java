@@ -11,7 +11,7 @@ import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.ev3.components.MyGyroSensor;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
-import de.scr.logic.SpaceKeeperController;
+import de.scr.logic.HoldDistanceController;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Battery;
 import lejos.hardware.Button;
@@ -27,9 +27,10 @@ public class Controller {
     private static Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public static volatile RunControl RUN = RunControl.STOP;
+    private final Object lock = new Object();
     private ResourceManager resourceManager;
     private FollowLineController followLineController;
-    private SpaceKeeperController spaceKeeperController;
+    private HoldDistanceController spaceKeeperController;
     private EvadeObstacleController evadeObstacleController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
@@ -54,11 +55,32 @@ public class Controller {
         Controller.RUN = RunControl.FOLLOW_EVADE;
         initResourceManager();
         createEv3Components();
+//        registerShutdownOnClick();
 
-        followLine();
-        holdDistance();
-        evadeObstacle();
-        registerShutdownOnClick();
+        modiSwitcher();
+    }
+
+    //TODO: Implement kill-switch
+    private void modiSwitcher() {
+        switch (RUN) {
+            case FOLLOW_EVADE:
+                followLine();
+                evadeObstacle();
+                break;
+            case FOLLOW_HOLD:
+                followLine();
+                holdDistance();
+                break;
+            case EVADE_OBSTACLE:
+                evadeObstacle();
+                break;
+            case FOLLOW_LINE:
+                followLine();
+                break;
+            case HOLD_DISTANCE:
+                holdDistance();
+                break;
+        }
     }
 
     private void initResourceManager() {
@@ -91,21 +113,21 @@ public class Controller {
         logger.info("Start followLine Mode");
         followLineController = new FollowLineController(this, drivable, primaryColorSensor, secondaryColorSensor);
         followLineController.init();
-        followLineController.start();
+        followLineController.start(lock);
     }
 
     private void holdDistance() {
         logger.info("Start holdDistance Mode");
-        spaceKeeperController = new SpaceKeeperController(drivable, primaryDistanceSensor);
+        spaceKeeperController = new HoldDistanceController(drivable, primaryDistanceSensor);
         spaceKeeperController.init();
-        spaceKeeperController.start();
+        spaceKeeperController.start(lock);
     }
 
     private void evadeObstacle() {
         logger.info("Start evadeObstacle Mode");
         evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor, primaryColorSensor);
         evadeObstacleController.init();
-        evadeObstacleController.start();
+        evadeObstacleController.start(lock);
     }
 
     private void registerShutdownOnClick() {

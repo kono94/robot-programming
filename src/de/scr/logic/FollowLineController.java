@@ -9,7 +9,6 @@ import de.scr.logic.adjuster.PIDController;
 import de.scr.utils.Normalizer;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Button;
-import lejos.utility.Delay;
 
 public class FollowLineController {
 
@@ -40,11 +39,10 @@ public class FollowLineController {
         System.out.println("Measuring dark color... waiting for click");
         darkColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor);
         System.out.println("darkColor: " + darkColor.primary + " " + darkColor.secondary);
-        Delay.msDelay(1000);
+
         System.out.println("Measuring light color... waiting for click");
         lightColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor);
         System.out.println("lightColor: " + lightColor.primary + " " + lightColor.secondary);
-        Delay.msDelay(1000);
 
         /*
 
@@ -73,12 +71,11 @@ public class FollowLineController {
         return new TwoColors(primary.getCurrentRedValue(), secondary.getCurrentRedValue());
     }
 
-    public void start() {
+    public void start(Object lock) {
         System.out.println("Starting follow line mechanic");
         new Thread(() -> {
             while (Controller.RUN != RunControl.STOP) {
-                if (Controller.RUN == RunControl.FOLLOW_LINE || Controller.RUN == RunControl.FOLLOW_HOLD
-                        || Controller.RUN == RunControl.FOLLOW_EVADE) {
+                if (RunControl.isFollowMode(Controller.RUN)) {
                     int turn;
                     if (drivable.getSpeed() > 0) {
                         turn = lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
@@ -86,7 +83,16 @@ public class FollowLineController {
                         turn = -lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
                     }
                     drivable.drive(turn);
+                } else {
+                    try {
+                        synchronized (lock) {
+                            lock.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+
             }
         }).start();
     }
