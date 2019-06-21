@@ -1,10 +1,10 @@
 package de.scr.ev3;
 
 import de.scr.Controller;
-import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.DriveRemote;
 import de.scr.ev3.components.MyGyroSensor;
+import de.scr.utils.RunControl;
 import lejos.hardware.port.Port;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RemoteEV3;

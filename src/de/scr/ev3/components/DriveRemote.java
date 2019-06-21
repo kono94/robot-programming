@@ -30,6 +30,7 @@ public class DriveRemote implements Drivable {
         try {
             this.speed = speed;
             int percentSpeed = getPercentSpeed(speed);
+            //TODO: Write better java-doc and delete this comment
             /*
                  300  turn 0 = left 300 right 300
                  300  turn 50 = left 150 right 300
@@ -115,6 +116,7 @@ public class DriveRemote implements Drivable {
     }
 
 
+    //TODO: Delete this maybe?
     public void rotateOnPlace(int speed, int degree) {
         try {
             right.stop(true);

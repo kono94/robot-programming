@@ -3,6 +3,7 @@ package de.scr.ev3.components;
 import de.scr.config.Constants;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+//TODO: Maybe delete this class?
 public class Drive implements Drivable{
     private EV3LargeRegulatedMotor left;
     private EV3LargeRegulatedMotor right;
