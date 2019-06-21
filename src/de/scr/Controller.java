@@ -13,6 +13,7 @@ import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
 import de.scr.logic.HoldDistanceController;
 import de.scr.utils.TwoColors;
+import de.scr.ui.MainFrame;
 import lejos.hardware.Battery;
 import lejos.hardware.Button;
 import lejos.remote.ev3.RemoteEV3;
