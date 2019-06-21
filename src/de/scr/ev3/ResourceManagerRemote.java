@@ -1,6 +1,7 @@
 package de.scr.ev3;
 
 import de.scr.Controller;
+import de.scr.config.RunControl;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.DriveRemote;
 import de.scr.ev3.components.MyGyroSensor;
@@ -51,7 +52,7 @@ public class ResourceManagerRemote extends ResourceManager {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Thread size: {}", Thread.getAllStackTraces().size());
             logger.info("Shutdown: Starting Shutdown-Hook");
-            Controller.RUN = false;
+            Controller.RUN = RunControl.STOP;
             try {
                 Thread.sleep(1000);
                 for (RMIRegulatedMotor regulatedMotor : regulatedMotors) {

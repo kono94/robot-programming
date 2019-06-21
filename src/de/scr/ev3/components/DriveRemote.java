@@ -122,6 +122,39 @@ public class DriveRemote implements Drivable {
         }
     }
 
+    public void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor) {
+        try {
+            right.stop(true);
+            left.stop(true);
+            float startAngle = gyroSensor.getAngle();
+            float currentAngle = startAngle;
+
+            if(degree > 0) { // rotate left
+                right.setSpeed(speed);
+                left.setSpeed(speed);
+                right.forward();
+                left.backward();
+                while(currentAngle < (startAngle + degree % 360)) {
+                    Delay.msDelay(50);
+                    currentAngle = gyroSensor.getAngle();
+                }
+            } else { // rotate right
+                right.setSpeed(speed);
+                left.setSpeed(speed);
+                right.backward();
+                left.forward();
+                while(currentAngle > (startAngle + degree % 360)) {
+                    Delay.msDelay(50);
+                    currentAngle = gyroSensor.getAngle();
+                }
+            }
+            left.stop(true);
+            right.stop(true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getSpeed() {
         return speed;
     }
