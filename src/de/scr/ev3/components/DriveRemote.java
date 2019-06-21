@@ -158,7 +158,6 @@ public class DriveRemote implements Drivable {
 
                 left.backward();
                 while (currentAngle < (startAngle + degree % 360)) {
-                    Delay.msDelay(50);
                     currentAngle = gyroSensor.getAngle();
                 }
             } else { // rotate right
@@ -171,7 +170,6 @@ public class DriveRemote implements Drivable {
                     left.forward();
 
                 while (currentAngle > (startAngle + degree % 360)) {
-                    Delay.msDelay(50);
                     currentAngle = gyroSensor.getAngle();
                 }
             }
