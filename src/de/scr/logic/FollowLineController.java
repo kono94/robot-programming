@@ -82,11 +82,11 @@ public class FollowLineController {
                     case LINE_CONVOY:
                         int turn;
                         if (drivable.getSpeed() > 0) {
-                            turn = -lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
+                            turn = lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
                         } else {
                             turn = lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
                         }
-                        drivable.drive(turn);
+                        drivable.drive(-turn);
                         break;
                     case LINEDETECT:
                         detectLine(RunControl.LINE);
@@ -112,6 +112,7 @@ public class FollowLineController {
         float f = normalizer.normalizeValue(colorSensor.getCurrentRedValue());
         if (f < 0.2f) {
             System.out.println("FOUND LINE - CURRENT VALUE:" + f);
+            drivable.drive(0, 0);
             drivable.setSpeed(Constants.DEFAULT_SPEED);
             controller.changeRunControl(controlOnLine);
         }
