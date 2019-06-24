@@ -2,7 +2,8 @@ package de.scr.ev3;
 
 import de.scr.Controller;
 import de.scr.ev3.components.Drivable;
-import de.scr.ev3.components.DriveRemote;
+import de.scr.ev3.components.Drive;
+import de.scr.ev3.components.MotorWrapper;
 import de.scr.ev3.components.MyGyroSensor;
 import de.scr.utils.RunControl;
 import lejos.hardware.port.Port;
@@ -32,7 +33,7 @@ public class ResourceManagerRemote extends ResourceManager {
     @Override
     public Drivable createDrivable(Port motorA, Port motorB) {
         logger.debug("Creating drivable on {} and {}", motorA.getName(), motorB.getName());
-        return new DriveRemote(createRegulatedMotor(motorA), createRegulatedMotor(motorB));
+        return new Drive(new MotorWrapper(createRegulatedMotor(motorA)), new MotorWrapper(createRegulatedMotor(motorB)));
     }
 
     private RMIRegulatedMotor createRegulatedMotor(Port port) {

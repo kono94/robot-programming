@@ -1,7 +1,7 @@
 package de.scr;
 
 import de.scr.config.Constants;
-import de.scr.ev3.ResourceManager;
+
 import de.scr.ev3.ResourceManagerLocal;
 import de.scr.ev3.ResourceManagerRemote;
 import de.scr.ev3.components.Drivable;
@@ -11,6 +11,7 @@ import de.scr.ev3.components.MyGyroSensor;
 import de.scr.logic.ConvoyController;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
+import de.scr.logic.OdometryController;
 import de.scr.ui.MainFrame;
 import de.scr.utils.RunControl;
 import de.scr.utils.TwoColors;
@@ -33,6 +34,7 @@ public class Controller {
     private FollowLineController followLineController;
     private ConvoyController spaceKeeperController;
     private EvadeObstacleController evadeObstacleController;
+    private OdometryController odometryController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
     private MyDistanceSensor primaryDistanceSensor;
@@ -61,6 +63,7 @@ public class Controller {
     private void init() {
         logger.info("Init Controller");
         RUN = RunControl.LINE_EVADE;
+        //RUN = RunControl.GUI_MODE;
         initResourceManager();
         createEv3Components();
 //        registerShutdownOnClick(); //TODO: Test this (should work, but maybe do this in main thread?)
@@ -83,7 +86,7 @@ public class Controller {
                 followLine();
                 break;
             case GUI_MODE:
-                new MainFrame(drivable);
+                odometry();
                 break;
         }
     }
@@ -133,6 +136,12 @@ public class Controller {
         evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor, primaryColorSensor);
         evadeObstacleController.init();
         evadeObstacleController.start(lock);
+    }
+
+    private void odometry() {
+        logger.info("Start odometry Mode");
+        odometryController = new OdometryController(drivable, gyroSensor);
+        odometryController.start();
     }
 
     private void registerShutdownOnClick() {
