@@ -2,6 +2,7 @@ package de.scr.ev3;
 
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.Drive;
+import de.scr.ev3.components.MotorWrapper;
 import de.scr.ev3.components.MyGyroSensor;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
@@ -14,7 +15,7 @@ public class ResourceManagerLocal extends ResourceManager {
 
     @Override
     public Drivable createDrivable(Port motorA, Port motorB) {
-        return new Drive(createLargeRegulatedMotor(motorA), createLargeRegulatedMotor(motorB));
+        return new Drive(new MotorWrapper(createLargeRegulatedMotor(motorA)), new MotorWrapper(createLargeRegulatedMotor(motorB)));
     }
 
     private EV3LargeRegulatedMotor createLargeRegulatedMotor(Port port) {

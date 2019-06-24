@@ -12,6 +12,7 @@ import de.scr.ev3.components.MyGyroSensor;
 import de.scr.logic.EvadeObstacleController;
 import de.scr.logic.FollowLineController;
 import de.scr.logic.HoldDistanceController;
+import de.scr.logic.OdometryController;
 import de.scr.ui.MainFrame;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Battery;
@@ -33,6 +34,7 @@ public class Controller {
     private FollowLineController followLineController;
     private HoldDistanceController spaceKeeperController;
     private EvadeObstacleController evadeObstacleController;
+    private OdometryController odometryController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
     private MyDistanceSensor primaryDistanceSensor;
@@ -53,10 +55,10 @@ public class Controller {
 
     private void init() {
         logger.info("Init Controller");
-        Controller.RUN = RunControl.FOLLOW_EVADE;
+        Controller.RUN = RunControl.GUI_MODE;
         initResourceManager();
         createEv3Components();
-//        registerShutdownOnClick();
+//       registerShutdownOnClick();
 
         modiSwitcher();
     }
@@ -82,7 +84,8 @@ public class Controller {
                 holdDistance();
                 break;
             case GUI_MODE:
-                new MainFrame(drivable);
+                odometry();
+                new MainFrame(new OdometryController(drivable, gyroSensor));
                 break;
         }
     }
@@ -132,6 +135,12 @@ public class Controller {
         evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor, primaryColorSensor);
         evadeObstacleController.init();
         evadeObstacleController.start(lock);
+    }
+
+    private void odometry() {
+        logger.info("Start odometry Mode");
+        odometryController = new OdometryController(drivable, gyroSensor);
+        odometryController.start();
     }
 
     private void registerShutdownOnClick() {

@@ -80,7 +80,7 @@ public class FollowLineController {
                     if (drivable.getSpeed() > 0) {
                         turn = -lineAdjuster.calculateAdjustment(normalizer.normalizeValue(colorSensor.getCurrentRedValue()));
                     } else {
-                        turn = lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
+                        turn = -lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
                     }
                     drivable.drive(turn);
                 } else {
@@ -92,7 +92,6 @@ public class FollowLineController {
                         e.printStackTrace();
                     }
                 }
-
             }
         }).start();
     }

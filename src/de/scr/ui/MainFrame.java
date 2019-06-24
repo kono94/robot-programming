@@ -1,35 +1,46 @@
 package de.scr.ui;
 
-import de.scr.ev3.components.Drivable;
+import de.scr.logic.OdometryController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MainFrame extends JFrame {
-    private final Set<Integer> pressed = new HashSet<>();
     private DriveControlPanel driveControlPanel;
 
-    public MainFrame(Drivable drivable) {
+    public MainFrame(OdometryController odometryController) {
         super();
         setLayout(new BorderLayout());
-        driveControlPanel = new DriveControlPanel(drivable);
+        driveControlPanel = new DriveControlPanel(odometryController);
         add(driveControlPanel, BorderLayout.CENTER);
+        JButton startRecordingButton = new JButton(("Start Recording"));
+        startRecordingButton.addActionListener((e) -> {
+            startRecordingButton.setText("Recording...");
+            startRecordingButton.setEnabled(false);
+            odometryController.setRecording(true);
+        });
+
+        JButton stopRecordingButton = new JButton("Stop");
+        stopRecordingButton.addActionListener((e -> {
+            startRecordingButton.setText("Start Recording");
+            startRecordingButton.setEnabled(true);
+            odometryController.endLastInstruction();
+        }));
+
+        JButton driveBackButton = new JButton(("Drive Back"));
+        driveBackButton.addActionListener((e -> odometryController.driveBack()));
         setFocusable(true);
         setFocusableWindowState(true);
 
-        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(e -> {
-            if (e.getID() == KeyEvent.KEY_PRESSED) {
-                pressed.add(e.getKeyCode());
-            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-                pressed.remove(e.getKeyCode());
-            }
-            return false;
-        });
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(startRecordingButton);
+        buttonPanel.add(stopRecordingButton);
+        buttonPanel.add(driveBackButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -45,10 +56,10 @@ public class MainFrame extends JFrame {
                         adjustSlider(dirSlider, -10);
                         break;
                     case KeyEvent.VK_W:
-                        adjustSlider(speedSlider, 5);
+                        adjustSlider(speedSlider, 3);
                         break;
                     case KeyEvent.VK_S:
-                        adjustSlider(speedSlider, -5);
+                        adjustSlider(speedSlider, -3);
                         break;
                     case KeyEvent.VK_Q:
                         dirSlider.setValue(0);
@@ -64,15 +75,5 @@ public class MainFrame extends JFrame {
 
     private void adjustSlider(JSlider s, int value) {
         s.setValue(s.getValue() + value);
-    }
-
-    private void resetSlider(JSlider s, int velocity) {
-        if (Math.abs(s.getValue()) <= velocity) {
-            s.setValue(0);
-        } else if (s.getValue() > 0) {
-            adjustSlider(s, -velocity);
-        } else if (s.getValue() < 0) {
-            adjustSlider(s, velocity);
-        }
     }
 }
