@@ -11,6 +11,10 @@ import lejos.utility.Delay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * Controller to hold the distance with the EV3-Ultrasonic-Sensor.
+ */
 public class ConvoyController {
     private static Logger logger = LoggerFactory.getLogger(ConvoyController.class);
     private MyDistanceSensor distanceSensor;

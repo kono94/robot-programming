@@ -80,7 +80,6 @@ public class Drive implements Drivable {
         this.drive(speed, turn);
     }
 
-
     public void rotateOnPlace(int degree, MyGyroSensor gyroSensor) {
         rotateOnPlace(this.speed, degree, gyroSensor);
     }

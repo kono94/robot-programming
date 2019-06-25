@@ -1,9 +1,9 @@
 package de.scr.logic.adjuster;
 
 public class SimplePID implements Adjuster{
-    IntegralManager integralManager;
-    ProportionalManager proportionalManager;
-    DifferentialManager differentialManager;
+    private IntegralManager integralManager;
+    private ProportionalManager proportionalManager;
+    private DifferentialManager differentialManager;
 
     /*
     values for follow line remote:
@@ -13,9 +13,9 @@ public class SimplePID implements Adjuster{
      */
 
 
-    private float Kp = 80;
-    private float Ki = 50;
-    private float Kd = 40;
+    private float Kp;
+    private float Ki;
+    private float Kd;
     private int minAdjustment = -100;
     private int maxAdjustment = 100;
     private float desiredValue;

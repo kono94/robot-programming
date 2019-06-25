@@ -13,6 +13,9 @@ import lejos.hardware.Button;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for following a line with the EV3-Color-Sensor
+ */
 public class FollowLineController {
     private static Logger logger = LoggerFactory.getLogger(FollowLineController.class);
     private Normalizer normalizer;

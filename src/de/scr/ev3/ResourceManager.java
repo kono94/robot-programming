@@ -14,6 +14,9 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Managing the EV3-Sensors for remote and local access
+ */
 public abstract class ResourceManager {
     List<Closeable> sensors;
     Logger logger = LoggerFactory.getLogger(getClass());

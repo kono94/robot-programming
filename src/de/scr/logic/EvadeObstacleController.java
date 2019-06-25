@@ -2,28 +2,29 @@ package de.scr.logic;
 
 import de.scr.Controller;
 import de.scr.ev3.components.Drivable;
-import de.scr.ev3.components.MyColorSensor;
 import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.ev3.components.MyGyroSensor;
 import de.scr.utils.RunControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for Evading an close obstacle.
+ * Requires the FollowLineController.
+ */
 public class EvadeObstacleController {
     private static Logger logger = LoggerFactory.getLogger(EvadeObstacleController.class);
     private static final double EVADE_THRESH_HOLD = 0.12;
     private Drivable drivable;
     private MyGyroSensor gyroSensor;
     private MyDistanceSensor distanceSensor;
-    private MyColorSensor colorSensor;
     private Controller controller;
 
-    public EvadeObstacleController(Controller controller, Drivable drivable, MyGyroSensor gyroSensor, MyDistanceSensor distanceSensor, MyColorSensor colorSensor) {
+    public EvadeObstacleController(Controller controller, Drivable drivable, MyGyroSensor gyroSensor, MyDistanceSensor distanceSensor) {
         this.controller = controller;
         this.drivable = drivable;
         this.gyroSensor = gyroSensor;
         this.distanceSensor = distanceSensor;
-        this.colorSensor = colorSensor;
     }
 
     public void init() {
@@ -37,7 +38,7 @@ public class EvadeObstacleController {
                 switch (controller.RUN) {
                     case LINE_EVADE:
                     case LINEDETECT_EVADING:
-                        sleepFor(100); //TODO: DO WE REALY NEED THIS?
+                        sleep(100); //TODO: DO WE REALLY NEED THIS?
 
                         //If Obstacle gets to close, start evade script
                         if (distanceSensor.getCurrentDistance() < EVADE_THRESH_HOLD) {
@@ -46,7 +47,7 @@ public class EvadeObstacleController {
                         break;
                     case EVADING:
                         logger.debug("Start Rotating");
-                        drivable.rotateOnPlace(25, -90, gyroSensor, false);
+                        drivable.rotateOnPlace(25, -90, gyroSensor);
                         logger.debug("Done with Rotating");
 
                         logger.debug("Start driving a circle");
@@ -68,7 +69,7 @@ public class EvadeObstacleController {
         }).start();
     }
 
-    private void sleepFor(int sleepTime) {
+    private void sleep(int sleepTime) {
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {

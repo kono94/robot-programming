@@ -47,8 +47,6 @@ public class Instruction {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Speed: ").append(speed).append(" Turn: ").append(turn).append(" Delay: ").append(delay);
-        return sb.toString();
+        return "Speed: " + speed + " Turn: " + turn + " Delay: " + delay;
     }
 }
