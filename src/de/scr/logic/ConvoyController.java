@@ -5,7 +5,7 @@ import de.scr.config.Constants;
 import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.logic.adjuster.Adjuster;
-import de.scr.logic.adjuster.SimplePID;
+import de.scr.logic.adjuster.SimpleDistancePID;
 import de.scr.utils.RunControl;
 import lejos.utility.Delay;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class ConvoyController {
     }
 
     public void init() {
-        distanceAdjuster = new SimplePID(0.25f, 800, 0, 0);
+        distanceAdjuster = new SimpleDistancePID(0.10f, 800, 0, 0);
     }
 
     public void start(Object lock) {

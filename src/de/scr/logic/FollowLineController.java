@@ -35,27 +35,17 @@ public class FollowLineController {
     }
 
     public void init() {
-        /*
-        colorSensor.switchToRedMode(); //TODO:
-        secondaryColorSensor.switchToRedMode();
-        */
-
         TwoColors darkColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "dark");
         TwoColors lightColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "light");
         controller.setDarkColor(darkColor);
         controller.setLightColor(lightColor);
 
-        /*
-
-        float darkColor = 0.05f;
-        float lightColor = 0.5f;
-        */
         normalizer = new Normalizer(darkColor.primary, lightColor.primary, -1, 1);
         secondaryNormalizer = new Normalizer(darkColor.secondary, lightColor.secondary, -1, 1);
 
         lineAdjuster = buildPidController();
 
-        //lineAdjuster = new SimplePID(0, 80, 50, 40);
+        //lineAdjuster = new SimpleDistancePID(0, 80, 50, 40);
         //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
     }
 

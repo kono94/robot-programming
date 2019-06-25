@@ -61,7 +61,7 @@ public class Controller {
 
     private void init() {
         logger.info("Init Controller");
-        RUN = RunControl.LINE_EVADE;
+        RUN = RunControl.LINE_CONVOY;
         //RUN = RunControl.GUI_MODE;
         initResourceManager();
         createEv3Components();
