@@ -38,7 +38,7 @@ public class EvadeObstacleController {
                 switch (controller.RUN) {
                     case LINE_EVADE:
                     case LINEDETECT_EVADING:
-                        sleep(100); //TODO: DO WE REALLY NEED THIS?
+                        sleep(100);
 
                         //If Obstacle gets to close, start evade script
                         if (distanceSensor.getCurrentDistance() < EVADE_THRESH_HOLD) {

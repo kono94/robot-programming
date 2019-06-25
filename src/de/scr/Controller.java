@@ -14,8 +14,6 @@ import de.scr.logic.FollowLineController;
 import de.scr.logic.OdometryController;
 import de.scr.utils.RunControl;
 import de.scr.utils.TwoColors;
-import lejos.hardware.Battery;
-import lejos.hardware.Button;
 import lejos.remote.ev3.RemoteEV3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,16 +59,12 @@ public class Controller {
 
     private void init() {
         logger.info("Init Controller");
-        RUN = RunControl.LINE_CONVOY;
-        //RUN = RunControl.GUI_MODE;
+        RUN = Constants.START_MODE;
         initResourceManager();
         createEv3Components();
-//        registerShutdownOnClick(); //TODO: Test this (should work, but maybe do this in main thread?)
-
         modiSwitcher();
     }
 
-    //TODO: Implement kill-switch
     private void modiSwitcher() {
         switch (RUN) {
             case LINE_EVADE:
@@ -141,14 +135,6 @@ public class Controller {
         logger.info("Start odometry Mode");
         odometryController = new OdometryController(drivable, gyroSensor);
         odometryController.start();
-    }
-
-    private void registerShutdownOnClick() {
-        new Thread(() -> {
-            Button.UP.waitForPressAndRelease();
-            RUN = RunControl.STOP;
-            logger.info("battery: " + Battery.getVoltage());
-        }).start();
     }
 
     public TwoColors getDarkColor() {

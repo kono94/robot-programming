@@ -40,17 +40,13 @@ public class PIDController implements Adjuster{
         if (integral > maxIntegral) integral = maxIntegral;
         if (integral < minIntegral) integral = minIntegral;
 
-//        System.out.print("currentSensorValue:" + currentSensorValue + "error: " + Kp * error + " integral: " + integral + " derivative: " + Kd * derivative);
-
         int adjustment = (int) (Kp * error + integral + Kd * derivative);
-//        System.out.println("\t adjustment" + adjustment);
         if (adjustment > highLimitAdjustment) adjustment = highLimitAdjustment;
         if (adjustment < lowLimitAdjustment) adjustment = lowLimitAdjustment;
 
         previousError = error;
         dt = (int) (System.currentTimeMillis() - this.cycleTime);
         this.cycleTime = System.currentTimeMillis();
-        //todo: needs to be inverted to match turn
         return adjustment;
     }
 
