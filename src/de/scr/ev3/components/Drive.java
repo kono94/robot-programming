@@ -22,8 +22,7 @@ public class Drive implements Drivable {
      */
     public void drive(int speed, int turn) {
         this.speed = speed;
-        int maxSpeed = (int) right.getMaxSpeed();
-        int customSpeed = (maxSpeed * speed) / 100;
+        int customSpeed = getPercentSpeed(speed);
         if (turn >= 0 && turn < TURN_THRESHOLD) {
             if (speed > 0) {
                 right.setSpeed((int) (customSpeed * ((100 - turn) / (double) 100)));
@@ -85,14 +84,15 @@ public class Drive implements Drivable {
     }
 
     public void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor) {
+        int customSpeed = getPercentSpeed(speed);
         right.stop(true);
         left.stop(true);
         float startAngle = gyroSensor.getAngle();
         float currentAngle = startAngle;
 
         if (degree > 0) { // rotate left
-            right.setSpeed(speed);
-            left.setSpeed(speed);
+            right.setSpeed(customSpeed);
+            left.setSpeed(customSpeed);
             right.forward();
             left.backward();
             while (currentAngle < (startAngle + degree % 360)) {
@@ -100,8 +100,8 @@ public class Drive implements Drivable {
                 currentAngle = gyroSensor.getAngle();
             }
         } else { // rotate right
-            right.setSpeed(speed);
-            left.setSpeed(speed);
+            right.setSpeed(customSpeed);
+            left.setSpeed(customSpeed);
             right.backward();
             left.forward();
             while (currentAngle > (startAngle + degree % 360)) {
@@ -111,6 +111,10 @@ public class Drive implements Drivable {
         }
         left.stop(true);
         right.stop(true);
+    }
+
+    private int getPercentSpeed(int percent) {
+        return ((int) right.getMaxSpeed() * percent) / 100;
     }
 
     public int getSpeed() {

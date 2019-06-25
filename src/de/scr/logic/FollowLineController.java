@@ -91,7 +91,7 @@ public class FollowLineController {
                         } else {
                             turn = lineAdjuster.calculateAdjustment(secondaryNormalizer.normalizeValue(secondaryColorSensor.getCurrentRedValue()));
                         }
-                        drivable.drive(-turn);
+                        drivable.drive(turn);
                         break;
                     case LINEDETECT:
                         detectLine(RunControl.LINE);

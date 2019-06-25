@@ -52,7 +52,7 @@ public class PIDController implements Adjuster{
         dt = (int) (System.currentTimeMillis() - this.cycleTime);
         this.cycleTime = System.currentTimeMillis();
         //todo: needs to be inverted to match turn
-        return -adjustment;
+        return adjustment;
     }
 
     public void setSetPoint(float setPoint) {

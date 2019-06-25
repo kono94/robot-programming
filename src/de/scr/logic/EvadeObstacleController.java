@@ -47,11 +47,11 @@ public class EvadeObstacleController {
                         break;
                     case EVADING:
                         logger.debug("Start Rotating");
-                        drivable.rotateOnPlace(25, -90, gyroSensor);
+                        drivable.rotateOnPlace(27, -90, gyroSensor);
                         logger.debug("Done with Rotating");
 
                         logger.debug("Start driving a circle");
-                        drivable.drive(drivable.getSpeed() + 10, -40);
+                        drivable.drive(-40);
 
                         controller.changeRunControl(RunControl.LINEDETECT_EVADING);
                         break;
