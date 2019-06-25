@@ -36,7 +36,6 @@ public class PIDController implements Adjuster{
         integral += Ki * error * dt;
         // Differential
         derivative =  (error - previousError) / dt;
-        //if(Math.abs(Kd * derivative) > 80) integral = 0;
 
         if (integral > maxIntegral) integral = maxIntegral;
         if (integral < minIntegral) integral = minIntegral;

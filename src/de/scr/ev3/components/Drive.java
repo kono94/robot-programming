@@ -4,7 +4,7 @@ import de.scr.config.Constants;
 import lejos.utility.Delay;
 
 public class Drive implements Drivable {
-    private static final int TURN_THRESHOLD = 80;
+    private static final int TURN_THRESHOLD = 90;
     private MotorWrapper left;
     private MotorWrapper right;
     private int speed;

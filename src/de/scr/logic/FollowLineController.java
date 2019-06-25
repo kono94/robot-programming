@@ -69,9 +69,9 @@ public class FollowLineController {
 
     private PIDController buildPidController() {
         PIDController pid = new PIDController(0);
-        pid.setKp(65f);
-        pid.setKi(0.1f);
-        pid.setKd(8000);
+        pid.setKp(55f);
+        pid.setKi(0.25f);
+        pid.setKd(5000);
         pid.setMaxIntegral(50);
         pid.setMinIntegral(-50);
         return pid;
