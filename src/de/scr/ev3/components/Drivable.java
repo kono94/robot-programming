@@ -5,6 +5,12 @@ public interface Drivable {
     void rotateOnPlace(int degree, MyGyroSensor gyroSensor);
     void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor);
     void drive(int turn);
+
+    void drive();
     void setSpeed(int speed);
     int getSpeed();
+
+    int getTurn();
+
+    void setTurn(int turn);
 }

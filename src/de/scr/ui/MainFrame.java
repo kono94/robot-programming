@@ -1,6 +1,8 @@
 package de.scr.ui;
 
+import de.scr.ev3.components.Drivable;
 import de.scr.logic.OdometryController;
+import de.scr.utils.Instruction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,15 +14,14 @@ import java.awt.event.KeyEvent;
 public class MainFrame extends JFrame {
     private static Logger logger = LoggerFactory.getLogger(MainFrame.class);
     private DriveControlPanel driveControlPanel;
+    private OdometryController odometryController;
 
     public MainFrame(OdometryController odometryController) {
         super();
+        this.odometryController = odometryController;
         setLayout(new BorderLayout());
         driveControlPanel = new DriveControlPanel(odometryController);
         add(driveControlPanel, BorderLayout.CENTER);
-        JSlider dirSlider = driveControlPanel.getDirectionSlider();
-        JSlider speedSlider = driveControlPanel.getSpeedSlider();
-
 
         JButton startRecordingButton = new JButton(("Start Recording"));
         JButton stopRecordingButton = new JButton("Stop Recording");
@@ -37,13 +38,14 @@ public class MainFrame extends JFrame {
 
         stopRecordingButton.addActionListener((e -> {
             odometryController.endLastInstruction();
+            odometryController.disableRecording();
             startRecordingButton.setText("Start Recording");
             startRecordingButton.setEnabled(true);
             driveBackButton.setEnabled(true);
-            speedSlider.setValue(0);
         }));
 
         driveBackButton.addActionListener((e -> {
+            setEnabled(false);
             startRecordingButton.setEnabled(false);
             stopRecordingButton.setEnabled(false);
             driveBackButton.setEnabled(false);
@@ -66,6 +68,7 @@ public class MainFrame extends JFrame {
                     startRecordingButton.setEnabled(true);
                     stopRecordingButton.setEnabled(false);
                     driveControlPanel.updateHistoryArea();
+                    setEnabled(true);
                 }
             }.execute();
         }));
@@ -84,23 +87,21 @@ public class MainFrame extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_D:
-                        adjustSlider(dirSlider, 5);
+                        changeTurn(5);
                         break;
                     case KeyEvent.VK_A:
-                        adjustSlider(dirSlider, -5);
+                        changeTurn(-5);
                         break;
                     case KeyEvent.VK_W:
-                        adjustSlider(speedSlider, 3);
+                        changeSpeed(3);
                         break;
                     case KeyEvent.VK_S:
-                        adjustSlider(speedSlider, -3);
+                        changeSpeed(-3);
                         break;
                     case KeyEvent.VK_Q:
-                        dirSlider.setValue(0);
-                        speedSlider.setValue(0);
+                        stop();
                 }
             }
         });
@@ -110,8 +111,38 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-    private void adjustSlider(JSlider s, int value) {
-        s.setValue(s.getValue() + value);
+    private void stop() {
+        Drivable drivable = odometryController.getDriveable();
+        drivable.setSpeed(0);
+        drivable.setTurn(0);
+        processNewInstruction();
+    }
+
+    private void changeSpeed(int value) {
+        Drivable drivable = odometryController.getDriveable();
+        drivable.setSpeed(drivable.getSpeed() + value);
+        processNewInstruction();
+    }
+
+    private void changeTurn(int value) {
+        Drivable drivable = odometryController.getDriveable();
+        drivable.setTurn(drivable.getTurn() + value);
+        processNewInstruction();
+    }
+
+    private void processNewInstruction() {
+        Drivable drivable = odometryController.getDriveable();
+        drivable.drive();
+
+        if (odometryController.isRecording()) {
+            odometryController.addInstruction(new Instruction(drivable.getSpeed(),
+                    drivable.getTurn(), 0, System.currentTimeMillis()));
+            driveControlPanel.updateHistoryArea();
+        }
+
+        driveControlPanel.getSpeedSlider().setValue(drivable.getSpeed());
+        driveControlPanel.getDirectionSlider().setValue(drivable.getTurn());
+
     }
 
     public DriveControlPanel getDriveControlPanel() {

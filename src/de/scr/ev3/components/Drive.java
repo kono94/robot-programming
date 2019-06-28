@@ -11,6 +11,9 @@ public class Drive implements Drivable {
     private MotorWrapper right;
     private int speed;
 
+
+    private int turn;
+
     public Drive(MotorWrapper left, MotorWrapper right) {
         this.left = left;
         this.right = right;
@@ -22,8 +25,10 @@ public class Drive implements Drivable {
      * @param turn  from -100 to 100 relation between left (-) and right (+) wheel; 100 only the right wheel is
      *              rotation in speed %; 0 equals straight forward
      */
-    public void drive(int speed, int turn) {
+    public synchronized void drive(int speed, int turn) {
         this.speed = speed;
+        this.turn = turn;
+
         int customSpeed = getPercentSpeed(speed);
         if (turn >= 0 && turn < TURN_THRESHOLD) {
             if (speed > 0) {
@@ -77,15 +82,19 @@ public class Drive implements Drivable {
         }
     }
 
-    public void drive(int turn) {
+    public synchronized void drive(int turn) {
         this.drive(speed, turn);
     }
 
-    public void rotateOnPlace(int degree, MyGyroSensor gyroSensor) {
+    public synchronized void drive() {
+        this.drive(speed, turn);
+    }
+
+    public synchronized void rotateOnPlace(int degree, MyGyroSensor gyroSensor) {
         rotateOnPlace(this.speed, degree, gyroSensor);
     }
 
-    public void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor) {
+    public synchronized void rotateOnPlace(int speed, int degree, MyGyroSensor gyroSensor) {
         int customSpeed = getPercentSpeed(speed);
         right.stop(true);
         left.stop(true);
@@ -100,31 +109,40 @@ public class Drive implements Drivable {
             right.forward();
             left.backward();
             while (currentAngle < (startAngle + degree % 360)) {
-                logger.debug("Current angle: {}", currentAngle);
                 currentAngle = gyroSensor.getAngle();
             }
+
         } else { // rotate right
             right.backward();
             left.forward();
             while (currentAngle > (startAngle + degree % 360)) {
-                logger.debug("Current angle: {}", currentAngle);
                 currentAngle = gyroSensor.getAngle();
             }
+
         }
 
         left.stop(true);
         right.stop(true);
     }
 
-    private int getPercentSpeed(int percent) {
+    private synchronized int getPercentSpeed(int percent) {
         return ((int) right.getMaxSpeed() * percent) / 100;
     }
 
-    public int getSpeed() {
+    public synchronized int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public synchronized void setSpeed(int speed) {
         this.speed = speed;
     }
+
+    public synchronized int getTurn() {
+        return turn;
+    }
+
+    public synchronized void setTurn(int turn) {
+        this.turn = turn;
+    }
+
 }

@@ -20,6 +20,7 @@ public class OdometryController {
 
     public OdometryController(Drivable drivable, MyGyroSensor myGyroSensor) {
         this.driveable = drivable;
+        driveable.setSpeed(0);
         this.myGyroSensor = myGyroSensor;
         history = new Stack<>();
     }
@@ -33,6 +34,10 @@ public class OdometryController {
     }
 
     public void driveBack() {
+        if (history.isEmpty()) {
+            logger.warn("Instructions stack is empty");
+            return;
+        }
         logger.debug("Driving back");
         driveable.rotateOnPlace(15,180, myGyroSensor);
         logger.debug("Rotation complete");
@@ -56,8 +61,6 @@ public class OdometryController {
     }
 
     public void endLastInstruction() {
-        isRecording = false;
-
         if (history.isEmpty())
             return;
         Instruction lastInstr = history.peek();
@@ -70,7 +73,13 @@ public class OdometryController {
 
     public void enableRecording() {
         clearHistory();
+        logger.debug("Enabled Recording");
         isRecording = true;
+    }
+
+    public void disableRecording() {
+        logger.debug("Disabled Recording");
+        isRecording = false;
     }
 
     public void clearHistory() {

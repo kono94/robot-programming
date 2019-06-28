@@ -21,18 +21,7 @@ public class DriveControlPanel extends JPanel {
         directionSlider = new JSlider(JSlider.HORIZONTAL, -100, 100, 0);
         speedSlider.setEnabled(false);
         directionSlider.setEnabled(false);
-        directionSlider.addChangeListener(e -> {
-            odometryController.getDriveable().drive(directionSlider.getValue());
-            odometryController.addInstruction(new Instruction(odometryController.getDriveable().getSpeed(),
-                    directionSlider.getValue(), 0, System.currentTimeMillis()));
-            updateHistoryArea();
-        });
-        speedSlider.addChangeListener(e -> {
-            odometryController.getDriveable().drive(speedSlider.getValue(), directionSlider.getValue());
-            odometryController.addInstruction(new Instruction(speedSlider.getValue(),
-                    directionSlider.getValue(), 0, System.currentTimeMillis()));
-            updateHistoryArea();
-        });
+
         add(directionSlider);
         add(speedSlider);
         add(historyArea);
