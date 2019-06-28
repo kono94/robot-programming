@@ -10,6 +10,7 @@ import de.scr.utils.Normalizer;
 import de.scr.utils.RunControl;
 import de.scr.utils.TwoColors;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ public class FollowLineController {
     }
 
     public void init() {
+        Sound.beep();
         TwoColors darkColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "dark");
         TwoColors lightColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "light");
         controller.setDarkColor(darkColor);
