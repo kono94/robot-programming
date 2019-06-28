@@ -27,10 +27,14 @@ public class MainFrame extends JFrame {
             startRecordingButton.setText("Start Recording");
             startRecordingButton.setEnabled(true);
             odometryController.endLastInstruction();
+            odometryController.setRecording(false);
         }));
 
         JButton driveBackButton = new JButton(("Drive Back"));
-        driveBackButton.addActionListener((e -> odometryController.driveBack()));
+        driveBackButton.addActionListener((e -> {
+            odometryController.endLastInstruction();
+            new Thread(odometryController::driveBack).start();
+        }));
         setFocusable(true);
         setFocusableWindowState(true);
 
@@ -50,10 +54,10 @@ public class MainFrame extends JFrame {
 
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_D:
-                        adjustSlider(dirSlider, 10);
+                        adjustSlider(dirSlider, 5);
                         break;
                     case KeyEvent.VK_A:
-                        adjustSlider(dirSlider, -10);
+                        adjustSlider(dirSlider, -5);
                         break;
                     case KeyEvent.VK_W:
                         adjustSlider(speedSlider, 3);

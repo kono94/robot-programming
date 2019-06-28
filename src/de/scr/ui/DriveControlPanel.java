@@ -43,7 +43,7 @@ public class DriveControlPanel extends JPanel {
     private void updateHistoryArea(Stack<Instruction> history) {
         StringBuilder sb = new StringBuilder();
         for (Instruction i : history) {
-            sb.append(i.toString());
+            sb.append(i.toString()).append("\n");
         }
         historyArea.setText(sb.toString());
     }

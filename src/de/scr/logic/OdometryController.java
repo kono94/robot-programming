@@ -5,10 +5,13 @@ import de.scr.ev3.components.MyGyroSensor;
 import de.scr.ui.MainFrame;
 import de.scr.utils.Instruction;
 import lejos.utility.Delay;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Stack;
 
 public class OdometryController {
+    private static Logger logger = LoggerFactory.getLogger(OdometryController.class);
     private Stack<Instruction> history;
     private Drivable driveable;
     private boolean isRecording;
@@ -29,12 +32,16 @@ public class OdometryController {
     }
 
     public void driveBack() {
-        driveable.rotateOnPlace(180, myGyroSensor);
+        logger.debug("Driving back");
+        driveable.rotateOnPlace(15,180, myGyroSensor);
+        logger.debug("Rotation complete");
         while (!history.isEmpty()) {
             Instruction instr = history.pop();
             driveable.drive(instr.getSpeed(), -instr.getTurn());
+            logger.debug("Instruction: {}", instr.toString());
             Delay.msDelay(instr.getDelay());
         }
+        driveable.drive(0,0);
     }
 
     public Drivable getDriveable() {
