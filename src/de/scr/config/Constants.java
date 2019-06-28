@@ -5,6 +5,9 @@ import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 
+/**
+ * Requires EV3-Brick connection
+ */
 public class Constants {
     public static final RunControl START_MODE = RunControl.LINE_EVADE;
     public static final String REMOTE_HOST = "10.0.1.1";
