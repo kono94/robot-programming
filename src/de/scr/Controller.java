@@ -47,6 +47,7 @@ public class Controller {
     public Controller() {
         logger.info("Creating Controller");
         this.isRunningOnDevice = System.getProperty("os.arch").toLowerCase().matches("arm");
+        logger.info("EV3 is started {}", isRunningOnDevice ? "on local" : "via remote");
         init();
     }
 
@@ -59,8 +60,9 @@ public class Controller {
 
     private void init() {
         logger.info("Init Controller");
-        RUN = Constants.START_MODE;
         initResourceManager();
+        RUN = Constants.START_MODE;
+        logger.info("Current Mode: {}", RUN);
         createEv3Components();
         modiSwitcher();
     }
@@ -85,6 +87,7 @@ public class Controller {
     }
 
     private void initResourceManager() {
+        logger.info("Initializing ResourceManager");
         if (isRunningOnDevice) {
             logger.info("Connecting local");
             resourceManager = new ResourceManagerLocal(this);
