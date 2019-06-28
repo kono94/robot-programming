@@ -1,9 +1,11 @@
 package de.scr.ev3.components;
 
 import de.scr.config.Constants;
-import lejos.utility.Delay;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Drive implements Drivable {
+    private static Logger logger = LoggerFactory.getLogger(Drive.class);
     private static final int TURN_THRESHOLD = 90;
     private MotorWrapper left;
     private MotorWrapper right;
@@ -90,25 +92,26 @@ public class Drive implements Drivable {
         float startAngle = gyroSensor.getAngle();
         float currentAngle = startAngle;
 
+        logger.debug("setting speed to : {}", customSpeed);
+        right.setSpeed(customSpeed);
+        left.setSpeed(customSpeed);
+
         if (degree > 0) { // rotate left
-            right.setSpeed(customSpeed);
-            left.setSpeed(customSpeed);
             right.forward();
             left.backward();
             while (currentAngle < (startAngle + degree % 360)) {
-                Delay.msDelay(50);
+                logger.debug("Current angle: {}", currentAngle);
                 currentAngle = gyroSensor.getAngle();
             }
         } else { // rotate right
-            right.setSpeed(customSpeed);
-            left.setSpeed(customSpeed);
             right.backward();
             left.forward();
             while (currentAngle > (startAngle + degree % 360)) {
-                Delay.msDelay(50);
+                logger.debug("Current angle: {}", currentAngle);
                 currentAngle = gyroSensor.getAngle();
             }
         }
+
         left.stop(true);
         right.stop(true);
     }

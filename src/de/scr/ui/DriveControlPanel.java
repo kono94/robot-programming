@@ -5,14 +5,15 @@ import de.scr.utils.Instruction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Stack;
 
 public class DriveControlPanel extends JPanel {
     private JSlider speedSlider;
     private JSlider directionSlider;
     private JTextArea historyArea;
+    private OdometryController odometryController;
 
     public DriveControlPanel(OdometryController odometryController) {
+        this.odometryController = odometryController;
         historyArea = new JTextArea();
         setLayout(new GridLayout(1, 3, 10, 10));
         setPreferredSize(new Dimension(300, 200));
@@ -24,13 +25,13 @@ public class DriveControlPanel extends JPanel {
             odometryController.getDriveable().drive(directionSlider.getValue());
             odometryController.addInstruction(new Instruction(odometryController.getDriveable().getSpeed(),
                     directionSlider.getValue(), 0, System.currentTimeMillis()));
-            updateHistoryArea(odometryController.getHistory());
+            updateHistoryArea();
         });
         speedSlider.addChangeListener(e -> {
             odometryController.getDriveable().drive(speedSlider.getValue(), directionSlider.getValue());
             odometryController.addInstruction(new Instruction(speedSlider.getValue(),
                     directionSlider.getValue(), 0, System.currentTimeMillis()));
-            updateHistoryArea(odometryController.getHistory());
+            updateHistoryArea();
         });
         add(directionSlider);
         add(speedSlider);
@@ -40,10 +41,11 @@ public class DriveControlPanel extends JPanel {
         setVisible(true);
     }
 
-    private void updateHistoryArea(Stack<Instruction> history) {
+    public void updateHistoryArea() {
         StringBuilder sb = new StringBuilder();
-        for (Instruction i : history) {
-            sb.append(i.toString()).append("\n");
+        int index = 0;
+        for (Instruction i : odometryController.getHistory()) {
+            sb.insert(0, ++index + ". - " + i.toString() + "\n");
         }
         historyArea.setText(sb.toString());
     }

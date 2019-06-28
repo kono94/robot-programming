@@ -16,6 +16,7 @@ public class OdometryController {
     private Drivable driveable;
     private boolean isRecording;
     private MyGyroSensor myGyroSensor;
+    private MainFrame mainFrame;
 
     public OdometryController(Drivable drivable, MyGyroSensor myGyroSensor) {
         this.driveable = drivable;
@@ -24,7 +25,7 @@ public class OdometryController {
     }
 
     public void start() {
-        new MainFrame(this);
+        mainFrame = new MainFrame(this);
     }
 
     public Stack<Instruction> getHistory() {
@@ -37,6 +38,7 @@ public class OdometryController {
         logger.debug("Rotation complete");
         while (!history.isEmpty()) {
             Instruction instr = history.pop();
+            mainFrame.getDriveControlPanel().updateHistoryArea();
             driveable.drive(instr.getSpeed(), -instr.getTurn());
             logger.debug("Instruction: {}", instr.toString());
             Delay.msDelay(instr.getDelay());
@@ -54,6 +56,8 @@ public class OdometryController {
     }
 
     public void endLastInstruction() {
+        isRecording = false;
+
         if (history.isEmpty())
             return;
         Instruction lastInstr = history.peek();
@@ -64,7 +68,12 @@ public class OdometryController {
         return isRecording;
     }
 
-    public void setRecording(boolean recording) {
-        isRecording = recording;
+    public void enableRecording() {
+        clearHistory();
+        isRecording = true;
+    }
+
+    public void clearHistory() {
+        history.removeAllElements();
     }
 }
