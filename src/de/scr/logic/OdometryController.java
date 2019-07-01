@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Stack;
 
+/**
+ * Controller to drive back from previously recorded route.
+ * Uses the datatype "Instruction" to save all actions
+ * onto a stack and then working it off again.
+ */
 public class OdometryController {
     private static Logger logger = LoggerFactory.getLogger(OdometryController.class);
     private Stack<Instruction> history;
@@ -38,9 +43,10 @@ public class OdometryController {
             logger.warn("Instructions stack is empty");
             return;
         }
-        logger.debug("Driving back");
+        logger.debug("Turning 90 degrees");
         driveable.rotateOnPlace(15,180, myGyroSensor);
         logger.debug("Rotation complete");
+        logger.debug("Starting working off the stack of instructions");
         while (!history.isEmpty()) {
             Instruction instr = history.pop();
             mainFrame.getDriveControlPanel().updateHistoryArea();

@@ -16,6 +16,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ResourceManagerRemote extends ResourceManager {
     private static Logger logger = LoggerFactory.getLogger(ResourceManagerRemote.class);
     private RemoteEV3 ev3;
@@ -50,12 +51,22 @@ public class ResourceManagerRemote extends ResourceManager {
         return myGyroSensor;
     }
 
+    /**
+     * Registers a shutdown-hook to close all open RMI ports.
+     * This is important because otherwise ports are essentially in an
+     * error state, not allowing to connect again (Brick has to be restarted).
+     */
     private void freeResourcesOnShutdown() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Thread size: {}", Thread.getAllStackTraces().size());
             logger.info("Shutdown: Starting Shutdown-Hook");
             controller.RUN = RunControl.STOP;
             try {
+                /*
+                    Simple solution to let all threads of each routine
+                    determine because RUN got set to RunControl.STOP
+                    and all while()-loops will stop executing.
+                 */
                 Thread.sleep(1000);
                 for (RMIRegulatedMotor regulatedMotor : regulatedMotors) {
                     regulatedMotor.close();

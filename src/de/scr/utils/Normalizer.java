@@ -1,8 +1,8 @@
 package de.scr.utils;
 
 /**
- * Helper class to normalize the given colors
- * from 0 to 1.
+ * Helper class to normalize the given values to the range
+ * of 0 to 1.
  */
 public class Normalizer {
     private float lowerBorder ;

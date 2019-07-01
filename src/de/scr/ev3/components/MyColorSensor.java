@@ -3,6 +3,11 @@ package de.scr.ev3.components;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorMode;
 
+/**
+ * Small wrapper class to simplify usage of the EV3ColorSensor which
+ * is primarily used in red-mode to detect the line in the
+ * FOLLOW_LINE mode.
+ */
 public class MyColorSensor {
     private EV3ColorSensor colorSensor;
     private SensorMode redMode;

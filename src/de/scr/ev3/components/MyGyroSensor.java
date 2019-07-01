@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
+/**
+ * Wrapper class for the EV3GyroSensor which is used to
+ * determine the current angle of the brick to control rotations.
+ * Used in the EVADE_OBSTACLE routine to turn 90° from the obstacle.
+ */
 public class MyGyroSensor {
     private static Logger logger = LoggerFactory.getLogger(MyGyroSensor.class);
     private EV3GyroSensor gyroSensor;
@@ -31,7 +36,7 @@ public class MyGyroSensor {
 
         myRMISampleProvider = new MyRMISampleProvider(ev3.createSampleProvider(
                 p.getName(), "lejos.hardware.sensor.EV3GyroSensor", modeName));
-        
+
         this.floatArr = new float[1];
         sampleProvider = null;
     }

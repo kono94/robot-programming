@@ -44,7 +44,6 @@ public class FollowLineController {
         secondaryNormalizer = new Normalizer(darkColor.secondary, lightColor.secondary, -1, 1);
 
         lineAdjuster = buildPidController();
-
         //lineAdjuster = new SimpleDistancePID(0, 80, 50, 40);
         //lineAdjuster = new RegressionAdjuster(normalizer.getMin(), normalizer.getMax());
     }

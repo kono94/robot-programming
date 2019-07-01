@@ -5,6 +5,11 @@ import lejos.remote.ev3.RMISampleProvider;
 import java.io.Closeable;
 import java.rmi.RemoteException;
 
+/**
+ * Wrapper class for all RMISampleProvider.
+ * Mainly implemented to add the "Closable" interface to the "RMISampleProvider"-class
+ * so the shutdown-hook is able to close those as well.
+ */
 public class MyRMISampleProvider implements Closeable {
     private RMISampleProvider rmiSampleProvider;
 

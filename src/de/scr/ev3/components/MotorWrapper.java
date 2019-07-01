@@ -5,6 +5,12 @@ import lejos.remote.ev3.RMIRegulatedMotor;
 
 import java.rmi.RemoteException;
 
+/**
+ * Wrapper class to mainly handle "RemoteExceptions" from the
+ * "RMIRegulatedMotor" class.
+ * "EV3LargeRegulatedMotor" exclusive methods like "synchronizeWith()"
+ * are not used.
+ */
 public class MotorWrapper {
     private EV3LargeRegulatedMotor motor;
     private RMIRegulatedMotor rmiMotor;

@@ -6,6 +6,9 @@ import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Very first try to follow the line based on polynomial regression.
+ */
 public class RegressionAdjuster implements Adjuster {
 
     private float min;

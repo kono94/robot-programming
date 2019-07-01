@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Controller for Evading an close obstacle.
+ * Controller for evading a close obstacle.
  * Requires the FollowLineController.
  */
 public class EvadeObstacleController {

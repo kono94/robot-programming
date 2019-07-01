@@ -1,5 +1,10 @@
 package de.scr.logic.adjuster;
 
+/**
+ * Very simple PID-controller without using dt (time) but rather
+ * pre-defined sample ranges.
+ * i.e: the integral is just the mean of the last 15 sample values.
+ */
 public class SimpleDistancePID implements Adjuster {
     private IntegralManager integralManager;
     private ProportionalManager proportionalManager;
