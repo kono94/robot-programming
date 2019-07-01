@@ -83,6 +83,8 @@ public class Controller {
             case GUI_MODE:
                 odometry();
                 break;
+            default:
+                logger.warn("{} is not a valid Start-Mode!", RUN);
         }
     }
 
