@@ -1,5 +1,8 @@
 package de.scr.utils;
 
+/**
+ * Control the states between all controller-threads
+ */
 public enum RunControl {
     //Start options
     STOP,

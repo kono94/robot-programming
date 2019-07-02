@@ -22,16 +22,15 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+/**
+ * Initialize the main components for the ev3-control
+ */
 public class Controller {
     private static Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public volatile RunControl RUN = RunControl.STOP;
     private final Object lock = new Object();
     private ResourceManager resourceManager;
-    private FollowLineController followLineController;
-    private ConvoyController spaceKeeperController;
-    private EvadeObstacleController evadeObstacleController;
-    private OdometryController odometryController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
     private MyDistanceSensor primaryDistanceSensor;
@@ -51,13 +50,6 @@ public class Controller {
         init();
     }
 
-    public void changeRunControl(RunControl c) {
-        this.RUN = c;
-        synchronized (lock) {
-            lock.notifyAll();
-        }
-    }
-
     private void init() {
         logger.info("Init Controller");
         initResourceManager();
@@ -65,6 +57,25 @@ public class Controller {
         logger.info("Current Mode: {}", RUN);
         createEv3Components();
         modiSwitcher();
+    }
+
+    private void initResourceManager() {
+        logger.info("Initializing ResourceManager");
+        if (isRunningOnDevice) {
+            logger.info("Connecting local");
+            resourceManager = new ResourceManagerLocal(this);
+        } else {
+            logger.info("Connecting with RMI");
+            RemoteEV3 ev3;
+            try {
+                ev3 = new RemoteEV3(Constants.REMOTE_HOST);
+                ev3.setDefault();
+            } catch (RemoteException | MalformedURLException | NotBoundException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Could not setup RemoteEV3");
+            }
+            resourceManager = new ResourceManagerRemote(this, ev3);
+        }
     }
 
     private void modiSwitcher() {
@@ -88,22 +99,10 @@ public class Controller {
         }
     }
 
-    private void initResourceManager() {
-        logger.info("Initializing ResourceManager");
-        if (isRunningOnDevice) {
-            logger.info("Connecting local");
-            resourceManager = new ResourceManagerLocal(this);
-        } else {
-            logger.info("Connecting with RMI");
-            RemoteEV3 ev3;
-            try {
-                ev3 = new RemoteEV3(Constants.REMOTE_HOST);
-                ev3.setDefault();
-            } catch (RemoteException | MalformedURLException | NotBoundException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Could not setup RemoteEV3");
-            }
-            resourceManager = new ResourceManagerRemote(this, ev3);
+    public void changeRunControl(RunControl c) {
+        this.RUN = c;
+        synchronized (lock) {
+            lock.notifyAll();
         }
     }
 
@@ -117,28 +116,28 @@ public class Controller {
 
     private void followLine() {
         logger.info("Start followLine Mode");
-        followLineController = new FollowLineController(this, drivable, primaryColorSensor, secondaryColorSensor);
+        FollowLineController followLineController = new FollowLineController(this, drivable, primaryColorSensor, secondaryColorSensor);
         followLineController.init();
         followLineController.start(lock);
     }
 
     private void holdDistance() {
         logger.info("Start holdDistance Mode");
-        spaceKeeperController = new ConvoyController(this, drivable, primaryDistanceSensor);
+        ConvoyController spaceKeeperController = new ConvoyController(this, drivable, primaryDistanceSensor);
         spaceKeeperController.init();
         spaceKeeperController.start(lock);
     }
 
     private void evadeObstacle() {
         logger.info("Start evadeObstacle Mode");
-        evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor);
+        EvadeObstacleController evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor);
         evadeObstacleController.init();
         evadeObstacleController.start(lock);
     }
 
     private void odometry() {
         logger.info("Start odometry Mode");
-        odometryController = new OdometryController(drivable, gyroSensor);
+        OdometryController odometryController = new OdometryController(drivable, gyroSensor);
         odometryController.start();
     }
 
