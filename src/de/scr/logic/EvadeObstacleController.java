@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * Controller for evading a close obstacle.
  * Requires the FollowLineController.
  */
-public class EvadeObstacleController {
+public class EvadeObstacleController implements RoutineController {
     private static Logger logger = LoggerFactory.getLogger(EvadeObstacleController.class);
     private static final double EVADE_THRESH_HOLD = 0.12;
     private Drivable drivable;
@@ -27,12 +27,14 @@ public class EvadeObstacleController {
         this.distanceSensor = distanceSensor;
     }
 
+    @Override
     public void init() {
         logger.info("init evading");
     }
 
+    @Override
     public void start(Object lock) {
-        logger.info("start evading");
+        logger.info("Starting Evade-Controller");
         new Thread(() -> {
             while (controller.RUN != RunControl.STOP) {
                 switch (controller.RUN) {

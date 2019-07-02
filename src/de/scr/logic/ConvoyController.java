@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller to hold the distance with the EV3-Ultrasonic-Sensor.
  */
-public class ConvoyController {
+public class ConvoyController implements RoutineController {
     private static Logger logger = LoggerFactory.getLogger(ConvoyController.class);
     private MyDistanceSensor distanceSensor;
     private Drivable drivable;
@@ -28,10 +28,12 @@ public class ConvoyController {
         this.distanceSensor = distanceSensor;
     }
 
+    @Override
     public void init() {
         distanceAdjuster = new SimpleDistancePID(0.10f, 800, 0, 0);
     }
 
+    @Override
     public void start(Object lock) {
         logger.info("Starting follow space keeper mechanic");
         new Thread(() -> {

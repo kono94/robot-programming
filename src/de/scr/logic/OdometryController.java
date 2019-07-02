@@ -15,7 +15,7 @@ import java.util.Stack;
  * Uses the datatype "Instruction" to save all actions
  * onto a stack and then working it off again.
  */
-public class OdometryController {
+public class OdometryController implements RoutineController {
     private static Logger logger = LoggerFactory.getLogger(OdometryController.class);
     private Stack<Instruction> history;
     private Drivable driveable;
@@ -30,7 +30,13 @@ public class OdometryController {
         history = new Stack<>();
     }
 
-    public void start() {
+    @Override
+    public void init() {
+    }
+
+    @Override
+    public void start(Object lock) {
+        logger.info("Starting Odometry-Controller");
         mainFrame = new MainFrame(this);
     }
 

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller for following a line with the EV3-Color-Sensor
  */
-public class FollowLineController {
+public class FollowLineController implements RoutineController {
     private static Logger logger = LoggerFactory.getLogger(FollowLineController.class);
     private Normalizer normalizer;
     private Normalizer secondaryNormalizer;
@@ -35,6 +35,7 @@ public class FollowLineController {
         this.secondaryColorSensor = secondaryColorSensor;
     }
 
+    @Override
     public void init() {
         Sound.beep();
         TwoColors darkColor = measureCurrentColorOnClick(colorSensor, secondaryColorSensor, "dark");
@@ -68,6 +69,7 @@ public class FollowLineController {
         return pid;
     }
 
+    @Override
     public void start(Object lock) {
         logger.info("Starting follow line mechanic");
         new Thread(() -> {

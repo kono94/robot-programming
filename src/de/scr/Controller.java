@@ -8,10 +8,7 @@ import de.scr.ev3.components.Drivable;
 import de.scr.ev3.components.MyColorSensor;
 import de.scr.ev3.components.MyDistanceSensor;
 import de.scr.ev3.components.MyGyroSensor;
-import de.scr.logic.ConvoyController;
-import de.scr.logic.EvadeObstacleController;
-import de.scr.logic.FollowLineController;
-import de.scr.logic.OdometryController;
+import de.scr.logic.*;
 import de.scr.utils.RunControl;
 import de.scr.utils.TwoColors;
 import lejos.remote.ev3.RemoteEV3;
@@ -21,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
     private static Logger logger = LoggerFactory.getLogger(Controller.class);
@@ -28,10 +27,6 @@ public class Controller {
     public volatile RunControl RUN = RunControl.STOP;
     private final Object lock = new Object();
     private ResourceManager resourceManager;
-    private FollowLineController followLineController;
-    private ConvoyController spaceKeeperController;
-    private EvadeObstacleController evadeObstacleController;
-    private OdometryController odometryController;
     private Drivable drivable;
     private MyColorSensor primaryColorSensor;
     private MyDistanceSensor primaryDistanceSensor;
@@ -61,30 +56,39 @@ public class Controller {
     private void init() {
         logger.info("Init Controller");
         initResourceManager();
+        createEv3Components();
         RUN = Constants.START_MODE;
         logger.info("Current Mode: {}", RUN);
-        createEv3Components();
-        modiSwitcher();
+
+        startSubRoutines();
     }
 
-    private void modiSwitcher() {
+    private void startSubRoutines() {
+        List<RoutineController> routineControllers = new ArrayList<>();
+
         switch (RUN) {
             case LINE_EVADE:
-                followLine();
-                evadeObstacle();
+                routineControllers.add(createFollowLineController());
+                routineControllers.add(createEvadeObstacleController());
                 break;
             case LINE_CONVOY:
-                followLine();
-                holdDistance();
+                routineControllers.add(createFollowLineController());
+                routineControllers.add(createConvoyController());
                 break;
             case LINE:
-                followLine();
+                routineControllers.add(createFollowLineController());
                 break;
             case GUI_MODE:
-                odometry();
+                routineControllers.add(createOdometryController());
                 break;
             default:
                 logger.warn("{} is not a valid Start-Mode!", RUN);
+        }
+
+
+        for (RoutineController routineController : routineControllers) {
+            routineController.init();
+            routineController.start(lock);
         }
     }
 
@@ -115,31 +119,21 @@ public class Controller {
         gyroSensor = resourceManager.createGyroSensor(Constants.GYRO_SENSOR_PORT);
     }
 
-    private void followLine() {
-        logger.info("Start followLine Mode");
-        followLineController = new FollowLineController(this, drivable, primaryColorSensor, secondaryColorSensor);
-        followLineController.init();
-        followLineController.start(lock);
+    private RoutineController createFollowLineController() {
+        return new FollowLineController(this, drivable, primaryColorSensor, secondaryColorSensor);
     }
 
-    private void holdDistance() {
-        logger.info("Start holdDistance Mode");
-        spaceKeeperController = new ConvoyController(this, drivable, primaryDistanceSensor);
-        spaceKeeperController.init();
-        spaceKeeperController.start(lock);
+
+    private RoutineController createConvoyController() {
+        return new ConvoyController(this, drivable, primaryDistanceSensor);
     }
 
-    private void evadeObstacle() {
-        logger.info("Start evadeObstacle Mode");
-        evadeObstacleController = new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor);
-        evadeObstacleController.init();
-        evadeObstacleController.start(lock);
+    private RoutineController createEvadeObstacleController() {
+        return new EvadeObstacleController(this, drivable, gyroSensor, primaryDistanceSensor);
     }
 
-    private void odometry() {
-        logger.info("Start odometry Mode");
-        odometryController = new OdometryController(drivable, gyroSensor);
-        odometryController.start();
+    private RoutineController createOdometryController() {
+        return new OdometryController(drivable, gyroSensor);
     }
 
     public TwoColors getDarkColor() {
