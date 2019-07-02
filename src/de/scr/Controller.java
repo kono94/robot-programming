@@ -21,6 +21,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Initialize the main components for the ev3-control
+ */
 public class Controller {
     private static Logger logger = LoggerFactory.getLogger(Controller.class);
 
@@ -46,13 +49,6 @@ public class Controller {
         init();
     }
 
-    public void changeRunControl(RunControl c) {
-        this.RUN = c;
-        synchronized (lock) {
-            lock.notifyAll();
-        }
-    }
-
     private void init() {
         logger.info("Init Controller");
         initResourceManager();
@@ -61,6 +57,25 @@ public class Controller {
         logger.info("Current Mode: {}", RUN);
 
         startSubRoutines();
+    }
+
+    private void initResourceManager() {
+        logger.info("Initializing ResourceManager");
+        if (isRunningOnDevice) {
+            logger.info("Connecting local");
+            resourceManager = new ResourceManagerLocal(this);
+        } else {
+            logger.info("Connecting with RMI");
+            RemoteEV3 ev3;
+            try {
+                ev3 = new RemoteEV3(Constants.REMOTE_HOST);
+                ev3.setDefault();
+            } catch (RemoteException | MalformedURLException | NotBoundException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Could not setup RemoteEV3");
+            }
+            resourceManager = new ResourceManagerRemote(this, ev3);
+        }
     }
 
     private void startSubRoutines() {
@@ -92,22 +107,10 @@ public class Controller {
         }
     }
 
-    private void initResourceManager() {
-        logger.info("Initializing ResourceManager");
-        if (isRunningOnDevice) {
-            logger.info("Connecting local");
-            resourceManager = new ResourceManagerLocal(this);
-        } else {
-            logger.info("Connecting with RMI");
-            RemoteEV3 ev3;
-            try {
-                ev3 = new RemoteEV3(Constants.REMOTE_HOST);
-                ev3.setDefault();
-            } catch (RemoteException | MalformedURLException | NotBoundException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Could not setup RemoteEV3");
-            }
-            resourceManager = new ResourceManagerRemote(this, ev3);
+    public void changeRunControl(RunControl c) {
+        this.RUN = c;
+        synchronized (lock) {
+            lock.notifyAll();
         }
     }
 

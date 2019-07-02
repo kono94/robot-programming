@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Controller to hold the distance with the EV3-Ultrasonic-Sensor.
+ * Requires a turn controlling unit.
  */
 public class ConvoyController implements RoutineController {
     private static Logger logger = LoggerFactory.getLogger(ConvoyController.class);
